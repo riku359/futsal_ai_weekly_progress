@@ -1,16 +1,17 @@
-# Weekly Progress
+# Weekly Progress Archive
 
-フットサル映像の選定、アノテーション、検出モデルの進捗報告を公開しています。
+フットサル映像解析の報告を、公開日ではなく対象内容の日付で管理しています。
+報告ファイルは `YYYYMMDD-内容.html` の形式にし、新しい日付を索引の先頭に追加します。
 
 ## 索引
 
 | 日付 | 報告 | 公開ページ |
 | --- | --- | --- |
-| 2026-09-29 | [今週の進捗](20260929-weekly-annotation-progress.html) | [進捗報告](https://riku359.github.io/weekly-annotation-progress-20260929/20260929-weekly-annotation-progress.html) |
-| 2026-09-14 | [データの選定とアノテーション計画](20260914-data-selection-annotation-plan.html) | [計画報告](https://riku359.github.io/weekly-annotation-progress-20260929/20260914-data-selection-annotation-plan.html) |
+| 2026-09-29 | [Astra Auto Label](20260929-astra-auto-label.html) | [2026-09-29 の公開ページ](https://riku359.github.io/weekly-annotation-progress-20260929/20260929-astra-auto-label.html) |
+| 2026-09-14 | [データの選定とアノテーション計画](20260914-data-selection-annotation-plan.html) | [2026-09-14 の公開ページ](https://riku359.github.io/weekly-annotation-progress-20260929/20260914-data-selection-annotation-plan.html) |
 
 ## 公開URL
 
 [報告一覧](https://riku359.github.io/weekly-annotation-progress-20260929/)
 
-このリポジトリはGitHub Pagesで公開しています。
+一覧ページから日付別の報告を開けます。

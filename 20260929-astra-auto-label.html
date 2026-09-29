@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>フットサル映像解析｜今週の進捗</title>
+<title>Astra Auto Label | 2026-09-29</title>
 <meta name="fx-date" content="2026-09-29">
-<meta name="fx-title" content="フットサル映像解析｜今週の進捗">
+<meta name="fx-title" content="Astra Auto Label">
 <meta name="fx-summary" content="4会場でAstraの下書きとRF-DETRの学習を試した。会場別モデルは小規模な共通評価で優勢。43試合のアノテーション量は作業時間の実測後に決める。">
 <meta name="fx-topic" content="基盤">
 <meta name="fx-stage" content="アノテーション">
@@ -99,8 +99,8 @@ footer{padding-top:35px;font-size:.74rem;color:var(--muted)}
 <body>
 <main class="page">
 <header>
-  <div class="eyebrow">Weekly progress / 2026.09.29</div>
-  <h1>フットサル映像解析<br>今週の進捗</h1>
+  <div class="eyebrow">Astra Auto Label / 2026.09.29</div>
+  <h1>Astra Auto Label</h1>
   <nav aria-label="ページ内の目次"><a href="#purpose">目的</a><a href="#plan">計画</a><a href="#astra">Astra</a><a href="#rfdetr">RF-DETR</a><a href="#discussion">議論</a><a href="#next">次の作業</a></nav>
 </header>
 
@@ -147,10 +147,10 @@ footer{padding-top:35px;font-size:.74rem;color:var(--muted)}
   </table></div>
   <p class="note">各試合の3クリップで一致枠、余分な枠、見逃しを合算した。人物の役割は問わず、IoU 0.5以上を一致とした。</p>
   <div class="video-grid">
-    <figure class="video-card"><div class="video-head">明学：ID誤りと誤検出</div><video src="./media/20260929-weekly-annotation-progress/meigaku-clip03-correction-zoom.mp4" controls loop muted playsinline preload="metadata"></video><figcaption>上がAstra、下が人手修正版。実線はID誤りと誤検出、点線は人手で追加した見逃し位置を示す。</figcaption></figure>
-    <figure class="video-card"><div class="video-head">学習院：ID誤りと誤検出</div><video src="./media/20260929-weekly-annotation-progress/gakushuin-clip03-correction-full.mp4" controls loop muted playsinline preload="metadata"></video><figcaption>上がAstra、下が人手修正版。実線はID誤りと誤検出、点線は人手で追加した見逃し位置を示す。</figcaption></figure>
-    <figure class="video-card"><div class="video-head">順天堂：ID誤りと誤検出</div><video src="./media/20260929-weekly-annotation-progress/juntendo-clip03-correction-zoom.mp4" controls loop muted playsinline preload="metadata"></video><figcaption>上がAstra、下が人手修正版。実線はID誤りと誤検出、点線は人手で追加した見逃し位置を示す。</figcaption></figure>
-    <figure class="video-card"><div class="video-head">流経：ID誤りと誤検出</div><video src="./media/20260929-weekly-annotation-progress/ryukei-clip01-correction-zoom.mp4" controls loop muted playsinline preload="metadata"></video><figcaption>上がAstra、下が人手修正版。実線はID誤りと誤検出、点線は人手で追加した見逃し位置を示す。</figcaption></figure>
+    <figure class="video-card"><div class="video-head">明学：ID誤りと誤検出</div><video src="./media/20260929-astra-auto-label/meigaku-clip03-correction-zoom.mp4" controls loop muted playsinline preload="metadata"></video><figcaption>上がAstra、下が人手修正版。実線はID誤りと誤検出、点線は人手で追加した見逃し位置を示す。</figcaption></figure>
+    <figure class="video-card"><div class="video-head">学習院：ID誤りと誤検出</div><video src="./media/20260929-astra-auto-label/gakushuin-clip03-correction-full.mp4" controls loop muted playsinline preload="metadata"></video><figcaption>上がAstra、下が人手修正版。実線はID誤りと誤検出、点線は人手で追加した見逃し位置を示す。</figcaption></figure>
+    <figure class="video-card"><div class="video-head">順天堂：ID誤りと誤検出</div><video src="./media/20260929-astra-auto-label/juntendo-clip03-correction-zoom.mp4" controls loop muted playsinline preload="metadata"></video><figcaption>上がAstra、下が人手修正版。実線はID誤りと誤検出、点線は人手で追加した見逃し位置を示す。</figcaption></figure>
+    <figure class="video-card"><div class="video-head">流経：ID誤りと誤検出</div><video src="./media/20260929-astra-auto-label/ryukei-clip01-correction-zoom.mp4" controls loop muted playsinline preload="metadata"></video><figcaption>上がAstra、下が人手修正版。実線はID誤りと誤検出、点線は人手で追加した見逃し位置を示す。</figcaption></figure>
   </div>
   <p class="note">赤枠はAstra側にだけ重ねる。実線はID誤りと誤検出、点線は人手で追加した見逃し位置を示す。bboxの位置やサイズだけを直した枠は赤くしない。枠の色は選手のチームと役割に対応し、橙が選手、青がゴールキーパー、桃が審判、緑がボールである。修正版はAstraの下書きを人が直して作ったため、precisionとrecallは独立した正解データでの精度ではない。</p>
 </section>

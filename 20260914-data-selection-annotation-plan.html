@@ -1,0 +1,1580 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="fx-date" content="2026-09-14">
+<meta name="fx-title" content="データの選定とアノテーション計画">
+<meta name="fx-summary" content="Weekly meeting の進捗。アノテーションを付ける82本、43試合と区間の取り方、関連データセットとの規模、Deep-EIoU と Astra 2通りのbboxの下書きの比較、Astra の使用枠、議論したい4点をまとめた。">
+<meta name="fx-topic" content="基盤">
+<meta name="fx-stage" content="段階2 アノテーション">
+<meta name="fx-experiments" content="011,012,021,022,023">
+<title>データの選定とアノテーション計画</title>
+<style>
+:root {
+  --ground: #F5F7F4;
+  --surface: #FFFFFF;
+  --sunken: #EBEFEB;
+  --ink: #16211C;
+  --ink-muted: #56675F;
+  --ink-faint: #87958E;
+  --rule: #D8E0D9;
+  --rule-strong: #B9C5BC;
+  --accent: #0B6E4F;
+  --accent-soft: #E2F0E8;
+  --pass: #0B6E4F;
+  --pass-soft: #E2F0E8;
+  --fail: #A63520;
+  --fail-soft: #F7E5E0;
+  --hold: #856012;
+  --hold-soft: #F4EAD6;
+  --bar: #8FB9A6;
+
+  --font-display: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Songti SC", "Noto Serif JP", serif;
+  --font-body: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", YuGothic, "Noto Sans JP", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+  --measure: 41rem;
+  --wide: 62rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0E1411;
+    --surface: #161D19;
+    --sunken: #1C2520;
+    --ink: #E3EAE5;
+    --ink-muted: #92A199;
+    --ink-faint: #6A7871;
+    --rule: #27322C;
+    --rule-strong: #3A4741;
+    --accent: #52BF94;
+    --accent-soft: #163026;
+    --pass: #52BF94;
+    --pass-soft: #163026;
+    --fail: #E5836D;
+    --fail-soft: #33201B;
+    --hold: #D0A44E;
+    --hold-soft: #2C2517;
+    --bar: #3F7A62;
+  }
+}
+
+:root[data-theme="dark"] {
+  --ground: #0E1411;
+  --surface: #161D19;
+  --sunken: #1C2520;
+  --ink: #E3EAE5;
+  --ink-muted: #92A199;
+  --ink-faint: #6A7871;
+  --rule: #27322C;
+  --rule-strong: #3A4741;
+  --accent: #52BF94;
+  --accent-soft: #163026;
+  --pass: #52BF94;
+  --pass-soft: #163026;
+  --fail: #E5836D;
+  --fail-soft: #33201B;
+  --hold: #D0A44E;
+  --hold-soft: #2C2517;
+  --bar: #3F7A62;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16.5px;
+  line-height: 1.85;
+  font-feature-settings: "palt" 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: 0 1.5rem 6rem;
+}
+
+p, ul, ol { max-width: var(--measure); }
+p { margin: 0 0 1.1em; }
+
+a { color: var(--accent); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+a:focus-visible, video:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+code, .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+code {
+  font-size: 0.86em;
+  background: var(--sunken);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+/* ---------- masthead ---------- */
+
+.masthead {
+  padding: 5rem 0 3.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 5.2vw, 3.2rem);
+  line-height: 1.32;
+  letter-spacing: 0.01em;
+  margin: 0 0 0.5em;
+  text-wrap: balance;
+}
+
+.subtitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.02rem, 2.4vw, 1.28rem);
+  line-height: 1.75;
+  color: var(--ink-muted);
+  margin: 0 0 2.5rem;
+  max-width: var(--measure);
+}
+
+.lede { max-width: var(--measure); }
+.lede p { font-size: 1.05rem; }
+
+/* ---------- facts panel ---------- */
+
+.facts {
+  margin: 2.75rem 0 0;
+  max-width: var(--wide);
+  border: 1px solid var(--rule);
+  background: var(--surface);
+}
+
+.facts dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+}
+
+.facts dt,
+.facts dd {
+  margin: 0;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--rule);
+  line-height: 1.65;
+}
+
+.facts dt {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  padding-top: 0.95rem;
+}
+
+.facts dd { font-size: 0.9rem; }
+.facts dd span.sub { display: block; color: var(--ink-muted); font-size: 0.84rem; }
+.facts dd .path { font-family: var(--font-mono); font-size: 0.85rem; }
+
+.facts dl > :nth-last-child(1),
+.facts dl > :nth-last-child(2) { border-bottom: none; }
+
+.facts .pending {
+  margin: 0;
+  max-width: none;
+  padding: 0.9rem 1.25rem;
+  border-top: 1px solid var(--rule);
+  background: var(--hold-soft);
+  color: var(--hold);
+  font-size: 0.86rem;
+  line-height: 1.7;
+}
+
+@media (max-width: 34rem) {
+  .facts dl { grid-template-columns: 1fr; }
+  .facts dt { padding-bottom: 0; border-bottom: none; }
+  .facts dd { padding-top: 0.25rem; }
+}
+
+/* ---------- sections ---------- */
+
+section { padding-top: 4.5rem; }
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 1rem;
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.45rem, 3.2vw, 1.95rem);
+  line-height: 1.45;
+  margin: 0 0 1.4rem;
+  text-wrap: balance;
+}
+
+h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 2.8rem 0 0.8rem;
+  color: var(--ink);
+}
+
+h3::before {
+  content: "";
+  display: inline-block;
+  width: 0.7rem;
+  height: 1px;
+  background: var(--rule-strong);
+  vertical-align: middle;
+  margin-right: 0.55rem;
+}
+
+/* ---------- task cards ---------- */
+
+.tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  margin: 2.5rem 0;
+  max-width: var(--wide);
+}
+
+.task {
+  background: var(--surface);
+  padding: 1.6rem 1.6rem 1.75rem;
+}
+
+.task-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.task-n {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+}
+
+.task-title::before { display: none; }
+
+.task-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.io {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  gap: 0.35rem 0.9rem;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  margin: 0 0 1.1rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--rule);
+  max-width: var(--measure);
+}
+.io dt { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-faint); letter-spacing: 0.06em; padding-top: 0.25rem; }
+.io dd { margin: 0; }
+
+.task p { font-size: 0.95rem; margin-bottom: 0.8em; }
+.task p:last-child { margin-bottom: 0; }
+
+.task ul {
+  font-size: 0.95rem;
+  padding-left: 1.1rem;
+  margin: 0 0 0.9em;
+}
+.task ul li { margin-bottom: 0.4em; }
+
+/* ---------- the split verdict ---------- */
+
+.verdict {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  margin: 2.5rem 0 0;
+  max-width: var(--wide);
+}
+
+.verdict-col {
+  background: var(--surface);
+  padding: 1.75rem 1.5rem;
+}
+
+.verdict-head {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin: 0 0 1.1rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 2px solid currentColor;
+  display: inline-block;
+}
+
+.verdict-col.is-pass .verdict-head { color: var(--pass); }
+.verdict-col.is-fail .verdict-head { color: var(--fail); }
+
+.verdict-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.verdict-col li { line-height: 1.55; }
+.verdict-col .model { font-weight: 600; }
+.verdict-col .domain {
+  display: block;
+  font-size: 0.84rem;
+  color: var(--ink-faint);
+}
+
+/* ---------- experiment rail ---------- */
+
+.exp {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0 2rem;
+  padding-top: 5rem;
+  align-items: start;
+}
+
+.exp-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  padding-top: 0.55rem;
+  border-top: 2px solid var(--rule-strong);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  position: sticky;
+  top: 1.5rem;
+}
+
+.exp-num { font-size: 1.5rem; letter-spacing: 0; color: var(--ink); line-height: 1; }
+
+.exp-body { min-width: 0; }
+.exp-body h2 { margin-top: 0.1rem; }
+
+@media (max-width: 46rem) {
+  .exp { grid-template-columns: 1fr; gap: 0; }
+  .exp-tag { flex-direction: row; align-items: baseline; gap: 0.7rem; position: static; margin-bottom: 1.1rem; }
+  .exp-num { font-size: 1.15rem; }
+}
+
+/* ---------- chips ---------- */
+
+.chip {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.15em 0.6em;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.chip.pass { background: var(--pass-soft); color: var(--pass); }
+.chip.fail { background: var(--fail-soft); color: var(--fail); }
+.chip.hold { background: var(--hold-soft); color: var(--hold); }
+.chip.idle { background: var(--sunken); color: var(--ink-muted); }
+
+/* ---------- figures ---------- */
+
+figure {
+  margin: 2.5rem 0;
+  width: 100%;
+}
+
+.exp-body > figure.wide {
+  width: calc(100% + 7.5rem);
+  margin-left: -7.5rem;
+}
+
+@media (max-width: 46rem) {
+  .exp-body > figure.wide { width: 100%; margin-left: 0; }
+}
+
+figure video[hidden] { display: none; }
+
+figure video, figure > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #000;
+  border: 1px solid var(--rule);
+}
+
+figcaption {
+  font-size: 0.86rem;
+  line-height: 1.7;
+  color: var(--ink-muted);
+  margin-top: 0.7rem;
+  max-width: var(--measure);
+}
+
+figcaption .key {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.swatch {
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  border: 2px solid currentColor;
+  vertical-align: -0.05em;
+  margin: 0 0.25em 0 0.1em;
+}
+
+/* ---------- tables ---------- */
+
+.table-wrap {
+  overflow-x: auto;
+  margin: 1.8rem 0;
+  max-width: var(--wide);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+th, td {
+  text-align: left;
+  padding: 0.6rem 0.9rem 0.6rem 0;
+  border-bottom: 1px solid var(--rule);
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+thead th {
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  font-weight: 600;
+  border-bottom: 1px solid var(--rule-strong);
+  padding-top: 0;
+  vertical-align: bottom;
+}
+
+td.n, th.n { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; }
+td.wrap { white-space: normal; min-width: 14rem; }
+td.wrap-narrow { white-space: normal; min-width: 9rem; }
+tbody tr:last-child td { border-bottom: none; }
+tr.ours td { background: var(--accent-soft); }
+tr.ours td:first-child { font-weight: 600; }
+.cell-sub { display: block; font-size: 0.78rem; color: var(--ink-faint); }
+
+.table-note {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  margin-top: -0.8rem;
+}
+
+/* ---------- contribution list ---------- */
+
+.contrib {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2.5rem;
+  max-width: var(--wide);
+  display: grid;
+  gap: 1.2rem;
+}
+.contrib li { display: grid; grid-template-columns: 2rem 1fr; gap: 0.6rem; align-items: baseline; }
+.contrib .idx { font-family: var(--font-mono); font-size: 1rem; color: var(--accent); }
+.contrib strong { font-weight: 600; font-size: 1.05rem; }
+.contrib .detail { display: block; font-size: 0.9rem; color: var(--ink-muted); line-height: 1.7; max-width: var(--measure); }
+
+/* ---------- question callout ---------- */
+
+.ask {
+  max-width: var(--wide);
+  margin: 2.6rem 0;
+  border: 1px solid var(--rule-strong);
+  background: var(--surface);
+}
+
+.ask-head {
+  display: flex;
+  gap: 0.9rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+  padding: 0.8rem 1.4rem;
+  background: var(--hold-soft);
+  border-bottom: 1px solid var(--rule);
+}
+
+.ask-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--hold);
+}
+
+.ask-q {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.12rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.ask-body { padding: 1.2rem 1.4rem 1.3rem; }
+.ask-body p, .ask-body li { font-size: 0.93rem; }
+.ask-body ul { padding-left: 1.1rem; margin: 0 0 0.9em; }
+.ask-body li { margin-bottom: 0.45em; }
+.ask-body > :last-child { margin-bottom: 0; }
+.ask .table-wrap { margin: 1rem 0; }
+
+/* ---------- venue grid ---------- */
+
+.venues {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.1rem 0.9rem;
+  margin: 0;
+}
+
+@media (max-width: 30rem) {
+  .venues { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.venue { margin: 0; }
+.venue img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: var(--sunken);
+}
+.venue figcaption {
+  margin-top: 0.35rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+.venue figcaption .num { color: var(--ink-faint); white-space: nowrap; }
+
+/* ---------- horizontal bars ---------- */
+
+.hbars {
+  display: grid;
+  grid-template-columns: minmax(8rem, 13rem) 1fr;
+  gap: 0.45rem 1rem;
+  align-items: center;
+  font-size: 0.86rem;
+  max-width: var(--wide);
+  margin: 1.6rem 0;
+}
+
+.hbars .lbl { line-height: 1.4; }
+.hbars .lbl .cell-sub { font-size: 0.74rem; }
+.hbars .track { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
+.hbars .bar {
+  height: 14px;
+  background: var(--bar);
+  border-radius: 0 4px 4px 0;
+  flex: none;
+}
+.hbars .bar.em { background: var(--accent); }
+.hbars .val { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-muted); white-space: nowrap; }
+
+@media (max-width: 34rem) {
+  .hbars { grid-template-columns: 1fr; gap: 0.1rem; }
+  .hbars .track { margin-bottom: 0.6rem; }
+}
+
+.chart-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  margin: 2rem 0 0.2rem;
+}
+
+/* ---------- dot plot in table ---------- */
+
+.dot-cell { padding-right: 1.4rem; }
+.dot-cell svg { display: block; overflow: visible; }
+.dot-val { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-muted); }
+svg text { font-family: var(--font-mono); }
+
+/* ---------- small multiples: tokens ---------- */
+
+.multiples {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.4rem;
+  max-width: var(--wide);
+  margin: 1.6rem 0;
+}
+.multiple h4 { font-size: 0.82rem; font-weight: 600; margin: 0 0 0.5rem; color: var(--ink); }
+.multiple .hbars { grid-template-columns: 7rem 1fr; margin: 0; }
+.multiple .ratio { font-size: 0.78rem; color: var(--ink-faint); margin: 0.4rem 0 0; }
+
+/* ---------- range chart ---------- */
+
+.range {
+  max-width: var(--wide);
+  margin: 1.6rem 0 0.6rem;
+  font-size: 0.84rem;
+}
+.range-row {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 1rem;
+  align-items: center;
+  min-height: 2.4rem;
+}
+.range-plot { position: relative; height: 2.4rem; }
+.range-plot .grid { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--rule); }
+.range-plot .grid.one { background: var(--hold); width: 2px; }
+.range-plot .span {
+  position: absolute; top: 50%; height: 12px; transform: translateY(-50%);
+  background: var(--accent); border-radius: 4px;
+}
+.range-axis .range-plot span {
+  position: absolute; transform: translateX(-50%); font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-faint); white-space: nowrap;
+}
+.legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; font-size: 0.8rem; color: var(--ink-muted); margin: 0.2rem 0 1.4rem; }
+.legend i { display: inline-block; vertical-align: -0.1em; margin-right: 0.35rem; }
+.legend .k-span { width: 1.4rem; height: 10px; background: var(--accent); border-radius: 3px; }
+.legend .k-one { width: 2px; height: 0.9rem; background: var(--hold); }
+
+@media (max-width: 34rem) {
+  .range-row { grid-template-columns: 5.5rem 1fr; gap: 0.6rem; }
+}
+
+/* ---------- match timeline ---------- */
+
+.timeline-wrap { overflow-x: auto; margin: 1.4rem 0 0; }
+.timeline-wrap svg { display: block; min-width: 40rem; width: 100%; height: auto; }
+
+/* ---------- annotation flow ---------- */
+
+.flow {
+  max-width: var(--wide);
+  margin: 1.8rem 0;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.lane {
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  padding: 1rem 1.2rem 1.2rem;
+}
+
+.lane-head {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  margin: 0 0 0.7rem;
+}
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 0.6rem 1.5rem;
+  counter-reset: step;
+}
+
+.steps li {
+  position: relative;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  padding-top: 0.2rem;
+}
+
+.steps li + li::before {
+  content: "→";
+  position: absolute;
+  left: -1.25rem;
+  top: 1.5rem;
+  color: var(--ink-faint);
+}
+
+.who {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.05em 0.5em;
+  margin-bottom: 0.3rem;
+  border-radius: 2px;
+  border: 1px solid var(--rule-strong);
+  color: var(--ink-muted);
+}
+.who.human { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+
+.hub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.4rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1.2rem;
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  font-size: 0.88rem;
+}
+.hub strong { color: var(--accent); }
+.hub .loops { font-size: 0.8rem; color: var(--ink-muted); }
+
+@media (max-width: 34rem) {
+  .steps li + li::before { content: "↓"; left: 0; top: -0.95rem; }
+  .steps { gap: 1.1rem; }
+}
+
+/* ---------- video tabs ---------- */
+
+.tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0 0 0.7rem; }
+.tabs button {
+  font: inherit;
+  font-size: 0.84rem;
+  padding: 0.3rem 0.9rem;
+  border: 1px solid var(--rule-strong);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.tabs button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+
+/* ---------- status rows ---------- */
+
+.pipeline {
+  max-width: var(--wide);
+  margin: 2rem 0;
+  font-size: 0.9rem;
+}
+
+.pipeline-row {
+  display: grid;
+  grid-template-columns: 2.4rem 11rem 1fr;
+  gap: 0.9rem;
+  align-items: baseline;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.pipeline-row:last-child { border-bottom: none; }
+
+.pipeline-k {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+.pipeline-t strong { font-weight: 600; display: block; }
+.pipeline-v { color: var(--ink-muted); font-size: 0.86rem; line-height: 1.65; }
+
+@media (max-width: 34rem) {
+  .pipeline-row { grid-template-columns: 2rem 1fr; }
+  .pipeline-v { grid-column: 2; }
+}
+
+/* ---------- closing ---------- */
+
+.closing {
+  margin-top: 5rem;
+  padding-top: 3rem;
+  border-top: 2px solid var(--rule-strong);
+}
+
+.todo {
+  max-width: var(--measure);
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.todo li {
+  display: grid;
+  grid-template-columns: 1.6rem 1fr;
+  gap: 0.7rem;
+  align-items: baseline;
+}
+
+.todo .idx {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--accent);
+}
+
+.todo span.detail {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--ink-muted);
+  line-height: 1.65;
+}
+
+.colophon {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+  line-height: 1.8;
+  max-width: var(--wide);
+}
+.colophon ul { padding-left: 1.1rem; max-width: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<!-- ============ 冒頭 ============================================== -->
+<header class="masthead">
+  <div class="eyebrow">
+    <span>Weekly meeting</span><span>2026-09-14</span><span>futsal_ai</span>
+  </div>
+
+  <h1>20260915進捗報告</h1>
+  <p class="subtitle">データセットとして使う動画の選定とアノテーションの計画を立てた</p>
+
+</header>
+
+
+<!-- ============ Contribution ====================================== -->
+<section id="contribution">
+  <h2>Contribution of this work</h2>
+
+  <ol class="contrib">
+    <li><span class="idx">1</span><span><strong>初となるフットサル試合映像のデータセットを公開。</strong><span class="detail">43試合、56.6時間、15会場の映像に、選手の枠と ID、セットプレーと交代の時刻を付ける。</span></span></li>
+    <li><span class="idx">2</span><span><strong>一般の観客がよく撮る、観客席からの固定カメラの映像を扱う。</strong><span class="detail">角度が悪く奥の選手が小さく写り、既存の MOT モデルが認識しにくい例を収録する。</span></span></li>
+    <li><span class="idx">3</span><span><strong>選手追跡に加え、戦術的に重要な選手交代とセットプレーの検知をタスクとして提案する。</strong><span class="detail">交代は時刻とチーム（エルレイナは退いた選手と入った選手）、セットプレーはキックイン、コーナーキック、ゴールクリアランスの時刻と種別を出力する。</span></span></li>
+  </ol>
+
+  <figure>
+    <div class="venues">
+      <figure class="venue"><img src="./media/20260914-data-selection-annotation-plan/venue_01.jpg" alt="アネルフットサルパーク白子"><figcaption><span>アネル白子</span><span class="num">12試合 16.7h</span></figcaption></figure>
+      <figure class="venue"><img src="./media/20260914-data-selection-annotation-plan/venue_02.jpg" alt="城西大学 坂戸キャンパス"><figcaption><span>城西大 坂戸</span><span class="num">5試合 8.2h</span></figcaption></figure>
+      <figure class="venue"><img src="./media/20260914-data-selection-annotation-plan/venue_03.jpg" alt="児玉総合公園体育館"><figcaption><span>エコーピア</span><span class="num">4試合 6.5h</span></figcaption></figure>
+      <figure class="venue"><img src="./media/20260914-data-selection-annotation-plan/venue_04.jpg" alt="東京工業大学"><figcaption><span>東京工業大</span><span class="num">2試合 3.4h</span></figcaption></figure>
+      <figure class="venue"><img src="./media/20260914-data-selection-annotation-plan/venue_05.jpg" alt="秋葉台文化体育館"><figcaption><span>秋葉台</span><span class="num">2試合 3.2h</span></figcaption></figure>
+      <figure class="venue"><img src="./media/20260914-data-selection-annotation-plan/venue_06.jpg" alt="FFC東川口"><figcaption><span>FFC東川口</span><span class="num">4試合 2.9h</span></figcaption></figure>
+      <figure class="venue"><img src="./media/20260914-data-selection-annotation-plan/venue_07.jpg" alt="シンコースポーツ寒川アリーナ"><figcaption><span>寒川</span><span class="num">3試合 2.4h</span></figcaption></figure>
+      <figure class="venue"><img src="./media/20260914-data-selection-annotation-plan/venue_08.jpg" alt="相模原ギオンアリーナ"><figcaption><span>相模原ギオン</span><span class="num">2試合 2.4h</span></figcaption></figure>
+      <figure class="venue"><img src="./media/20260914-data-selection-annotation-plan/venue_09.jpg" alt="神奈川県立スポーツセンター"><figcaption><span>神奈川県立SC</span><span class="num">2試合 2.2h</span></figcaption></figure>
+      <figure class="venue"><img src="./media/20260914-data-selection-annotation-plan/venue_10.jpg" alt="多摩大学 多摩キャンパス"><figcaption><span>多摩大</span><span class="num">2試合 2.0h</span></figcaption></figure>
+      <figure class="venue"><img src="./media/20260914-data-selection-annotation-plan/venue_11.jpg" alt="春日部市総合体育館"><figcaption><span>春日部</span><span class="num">1試合 1.6h</span></figcaption></figure>
+      <figure class="venue"><img src="./media/20260914-data-selection-annotation-plan/venue_12.jpg" alt="小金井総合体育館"><figcaption><span>小金井</span><span class="num">1試合 1.4h</span></figcaption></figure>
+      <figure class="venue"><img src="./media/20260914-data-selection-annotation-plan/venue_13.jpg" alt="MFP味の素スタジアム"><figcaption><span>味の素スタジアム</span><span class="num">1試合 1.3h</span></figcaption></figure>
+      <figure class="venue"><img src="./media/20260914-data-selection-annotation-plan/venue_14.jpg" alt="パデル&amp;フットサル 晴れのち晴れ"><figcaption><span>パデル</span><span class="num">1試合 1.3h</span></figcaption></figure>
+      <figure class="venue"><img src="./media/20260914-data-selection-annotation-plan/venue_15.jpg" alt="府中市総合体育館"><figcaption><span>府中</span><span class="num">1試合 1.1h</span></figcaption></figure>
+    </div>
+    <figcaption><span class="key">画像例。</span></figcaption>
+  </figure>
+
+</section>
+
+<!-- ============ ロードマップ ====================================== -->
+<section>
+  <p class="section-label">ロードマップ</p>
+  <h2>4段の順序と、いまの位置</h2>
+
+  <div class="pipeline">
+    <div class="pipeline-row">
+      <div class="pipeline-k">01</div>
+      <div class="pipeline-t"><strong>データの選定</strong><span class="chip pass">母集団は確定</span></div>
+      <div class="pipeline-v">使う動画とbboxをつける区間の選び方を決めた。</div>
+    </div>
+    <div class="pipeline-row">
+      <div class="pipeline-k">02</div>
+      <div class="pipeline-t"><strong>アノテーション</strong><span class="chip hold">手順を確定、下書きを比較中</span></div>
+      <div class="pipeline-v">3手法の下書きを定性比較した。</div>
+    </div>
+    <div class="pipeline-row">
+      <div class="pipeline-k">03</div>
+      <div class="pipeline-t"><strong>ゼロショット評価</strong><span class="chip idle">未着手</span></div>
+      <div class="pipeline-v">ベースラインは後日選ぶ。</div>
+    </div>
+    <div class="pipeline-row">
+      <div class="pipeline-k">04</div>
+      <div class="pipeline-t"><strong>ファインチューニング評価</strong><span class="chip idle">未着手</span></div>
+      <div class="pipeline-v">ベースラインは後日選ぶ。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 01 データの選定 =================================== -->
+<div class="exp" id="s01">
+  <div class="exp-tag"><span class="exp-num">01</span><span>データの選定</span></div>
+  <div class="exp-body">
+    <h2>どの映像のどの区間にアノテーションを付けるか</h2>
+
+    <h3>使う映像</h3>
+    <p>全162本から、慶應の試合、会場が分かるもの、固定カメラの順に絞った。
+固定カメラの判定は <a href="https://github.com/riku359/futsal_ai/blob/main/reports/20260914-camera-motion-filter.html">固定カメラ判定</a> にある。
+数回だけ構図を変える13本は、動いた時点で区間に切って残す。</p>
+
+    <p class="chart-title">絞り込みの3段（棒は映像の時間）</p>
+    <div class="hbars" id="funnel"></div>
+
+    <p class="chart-title">会場ごとの映像の時間（82本、43試合）</p>
+    <div class="hbars" id="venue-bars"></div>
+
+    <div class="ask" id="ask-camera">
+      <div class="ask-head"><span class="ask-label">論点 1 / 4</span><p class="ask-q">データセットを固定カメラの映像に絞るか</p></div>
+      <div class="ask-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>案</th><th>得られるもの</th><th>懸念</th></tr></thead>
+            <tbody>
+              <tr><td>固定カメラに絞る（82本、43試合）</td><td class="wrap">コートのキャリブレーションが1本に1回で済む。視点がそろい、モデルの性質が安定しやすい</td><td class="wrap">カメラが動く映像に弱くなり、アプリケーションとしての汎用性が下がりうる</td></tr>
+              <tr><td>追従も含める（111本、56試合）</td><td class="wrap">カメラが動く映像も学習と評価の対象になる</td><td class="wrap">コートの基準点をフレームごとに推定する必要がある。</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>いまの案は折衷である。
+研究の最初の段階では固定カメラに限り、アプリのデモでは次のように扱う。</p>
+        <ul>
+          <li>カメラが動いたかを、<a href="https://github.com/riku359/futsal_ai/blob/main/reports/20260914-camera-motion-filter.html">固定カメラ判定</a>の信号処理で判定する</li>
+          <li>構え直しの映像は、構図が変わる時点で切って分割する</li>
+          <li>カメラが動き続ける映像の場合、「精度が下がる場合がある」と注意書きを出す</li>
+        </ul>
+        <p>Future Workとしてカメラが動く場合も対応させる。</p>
+      </div>
+    </div>
+
+    <h3>アノテーションを付ける区間</h3>
+    <p>Astraは優秀だがtoken消費が激しい。そこで2段階に分ける。
+Astra の下書きを人が直して少数フレームに bbox を付け、それで RF-DETR を Fine-Tuning し、その出力を人が直す。
+イベント（セットプレー・交代）時刻は43試合の全体に付ける。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>段階とアノテーション</th><th>区間</th><th class="n">量</th><th>付け方</th></tr></thead>
+        <tbody>
+          <tr><td class="wrap-narrow"><strong>段階1</strong><br>Astra による少数フレームの bbox</td><td>15会場 × 3秒 × 20本（前後半10ずつ）</td><td class="n">4500 frames<span class="cell-sub">900s × 5fps</span></td><td class="wrap">Astra が下書きし、人が直す</td></tr>
+          <tr><td class="wrap-narrow"><strong>段階2</strong><br>Fine-Tuning した RF-DETR による bbox と ID</td><td>1試合に連続5分 × 43試合</td><td class="n">387,000 frames<span class="cell-sub">30 fps 換算で215分</span></td><td class="wrap">RF-DETR ＋ ByteTrack(＋ Astra ReID) の出力を、人が 5 fps で直し、間を補完。</td></tr>
+          <tr><td class="wrap-narrow"><strong>段階3</strong><br>セットプレー3種、交代、得点の時刻</td><td>試合全体 × 43試合</td><td class="n">56.6時間</td><td class="wrap">ルールが出した候補を人が直す</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <figure>
+      <div class="timeline-wrap" id="timeline"></div>
+      <figcaption><span class="key">1試合での区間の配置例。</span>灰色の最初と最後の5分からは3秒を引かない。
+緑の縦線は、残りを10等分した各区間から1本ずつ無作為に取った3秒である。</figcaption>
+    </figure>
+
+    <h3>関連データセットとの規模</h3>
+    <p>段階ごとに、近いデータセットと並べる。
+点の位置は0から始まる等間隔の目盛りで、値の大きい順に並べる。</p>
+
+    <p class="chart-title">段階1：RF-DETR を競技の画像で Fine-Tuning した前例</p>
+    <div class="table-wrap">
+      <table id="dotplot-stage1">
+        <thead>
+          <tr>
+            <th>例、競技と映像</th><th>クラス</th>
+            <th class="dot-cell">bbox を付けた<br>画像（枚）<div class="dot-axis"></div></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <p class="chart-title">段階2：bbox と ID を付けたデータセット</p>
+    <div class="table-wrap">
+      <table id="dotplot-stage2">
+        <thead>
+          <tr>
+            <th>データセットと競技</th><th class="n">試合</th><th>1本の長さ</th><th class="n">シーケンス数</th>
+            <th class="dot-cell">アノテーションした<br>時間（分）<div class="dot-axis"></div></th>
+            <th class="dot-cell">アノテーションした<br>フレーム<div class="dot-axis"></div></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <p class="chart-title">段階3：イベント時刻を付けたデータセット</p>
+    <div class="table-wrap">
+      <table id="dotplot-stage3">
+        <thead>
+          <tr>
+            <th>データセット、競技とカメラ</th><th class="n">試合</th><th>アノテーション</th>
+            <th class="dot-cell">総時間<br>（時間）<div class="dot-axis"></div></th>
+            <th class="dot-cell">イベント<br>（件）<div class="dot-axis"></div></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="ask" id="ask-length">
+      <div class="ask-head"><span class="ask-label">論点 2 / 4</span><p class="ask-q">段階1 の Astra の下書きと、段階2 の bbox と ID の量に過不足はあるか</p></div>
+      <div class="ask-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th></th><th>案</th><th class="n">人が直すフレーム</th></tr></thead>
+            <tbody>
+              <tr><td><strong>段階1</strong></td><td>15会場 × 20本 × 15フレーム</td><td class="n">4,500</td></tr>
+              <tr><td rowspan="3"><strong>段階2</strong></td><td>43試合 × 5分</td><td class="n">64,500</td></tr>
+              <tr><td>43試合 × 2分</td><td class="n">25,800</td></tr>
+              <tr><td>15会場 × 5分</td><td class="n">22,500</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>段階1 の4,500フレームは、RF-DETR を他競技で Fine-Tuning した前例（<a href="https://blog.roboflow.com/automate-tennis-analytics/">テニス 85枚</a>から <a href="https://huggingface.co/julianzu9612/RFDETR-Soccernet">サッカー 42,750枚</a>）の中ほどにあたる。
+ただし1本の15フレームは5fpsで互いによく似ており、見え方の違いは300本分にとどまる。
+段階1 の下書きを Astra で作ると、Codex の Plus プランで3週間かかる見込みである。
+段階2 の5分 × 43試合は、既存のどのデータセットより大きい。
+どちらも最初の3会場で実測してから決めたい。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 02 アノテーション ================================= -->
+<div class="exp" id="s02">
+  <div class="exp-tag"><span class="exp-num">02</span><span>アノテーション</span></div>
+  <div class="exp-body">
+    <h2>bboxの下書きを何に作らせ、人がどこを直すか</h2>
+
+    <h3>下書きの3手法を同じ10秒で比べる</h3>
+    <p>4試合の10秒（5 fps で50フレーム）に、3手法で下書きを付けた。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>手法</th><th>枠と ID の作り方</th><th>役割</th></tr></thead>
+        <tbody>
+          <tr><td>Deep-EIoU</td><td class="wrap">YOLOX-x ＋ OSNet（SportsMOT で学習）</td><td>なし</td></tr>
+          <tr><td>Astra 1枚ずつ</td><td class="wrap">1依頼に画像1枚。ID は特徴点追跡で結ぶ</td><td>選手、GK、審判</td></tr>
+          <tr><td>Astra 複数フレーム</td><td class="wrap">1つの会話で11枚を続けて読み、枠と ID を書く</td><td>選手、GK、審判</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <figure class="wide">
+      <div class="tabs" role="tablist" aria-label="試合を選ぶ">
+        <button type="button" id="tab-toin" role="tab" aria-selected="true" aria-controls="vid-toin">桐蔭</button>
+        <button type="button" id="tab-chuo" role="tab" aria-selected="false" aria-controls="vid-chuo">中央</button>
+        <button type="button" id="tab-efnet" role="tab" aria-selected="false" aria-controls="vid-efnet">エフネット</button>
+        <button type="button" id="tab-juntendo" role="tab" aria-selected="false" aria-controls="vid-juntendo">順天堂</button>
+      </div>
+      <video id="vid-toin" data-tab="tab-toin" src="./media/20260914-data-selection-annotation-plan/toin_compare.mp4" controls loop muted playsinline preload="auto"></video>
+      <video id="vid-chuo" data-tab="tab-chuo" src="./media/20260914-data-selection-annotation-plan/chuo_compare.mp4" controls loop muted playsinline preload="auto" hidden></video>
+      <video id="vid-efnet" data-tab="tab-efnet" src="./media/20260914-data-selection-annotation-plan/efnet_compare.mp4" controls loop muted playsinline preload="metadata" hidden></video>
+      <video id="vid-juntendo" data-tab="tab-juntendo" src="./media/20260914-data-selection-annotation-plan/juntendo_compare.mp4" controls loop muted playsinline preload="metadata" hidden></video>
+      <figcaption><span class="key">上から Deep-EIoU、Astra 1枚ずつ、Astra 複数フレーム。</span>Deep-EIoU は<span class="swatch" style="color:#50E650"></span>緑1色、Astra は<span class="swatch" style="color:#28AAFF"></span>選手、<span class="swatch" style="color:#FFDC28"></span>GK、<span class="swatch" style="color:#FF3C3C"></span>審判。
+エフネットと順天堂の Astra 1枚ずつは未実行（Not Yet）。</figcaption>
+    </figure>
+
+    <ul>
+      <li><strong>Deep-EIoU</strong> は見逃し、控えの誤検出などが多い</li>
+      <li><strong>Astra 1枚ずつ</strong>は遠くのGKの除外、審判が誤って3人検知、見逃しなどがある</li>
+      <li><strong>Astra 複数フレーム</strong>は取り違えが最も少ないが、トークン消費が大きい。</li>
+    </ul>
+    <p>目視での比較で、精度は測っていない。</p>
+
+    <h3>アノテーションの流れ</h3>
+    <p>人は下書きを直すだけで、枠を一から描かない。</p>
+
+    <div class="flow">
+      <div class="lane">
+        <p class="lane-head">会場ごと（15会場）</p>
+        <ol class="steps">
+          <li><span class="who human">人</span><br>コート線をアノテーション（16の基準点を結ぶ）</li>
+          <li><span class="who">抽出</span><br>会場ごとに3秒 × 20本の区間を選ぶ</li>
+          <li><span class="who">Astra</span><br>3秒×5fps=15枚をastraに渡してbbox推論</li>
+          <li><span class="who human">人</span><br>15フレームすべてのbboxを直し、RF-DETRのFTデータに</li>
+        </ol>
+      </div>
+      <div class="hub">
+        <strong>RF-DETR を Fine-Tuning</strong>
+        <span class="loops">Astra+人で直したbboxを用いてFTする。必要に応じて公開フットサルデータ（画像）も使う。</span>
+      </div>
+      <div class="lane">
+        <p class="lane-head">試合ごと（43試合）</p>
+        <ol class="steps">
+          <li><span class="who">RF-DETR + ByteTrack</span><br>試合全体にbboxとID予測</li>
+          <li><span class="who human">人</span><br>ID の切れ目や人数の合わないフレームを機械的に選び、優先して直す</li>
+          <li><span class="who">ルール</span> <span class="who human">人</span><br>イベント（セットプレー、交代）時刻の候補を出し、試合を通して見て直す</li>
+          <li><span class="who human">人</span><br>セットプレーと交代を含む（且つ難解な）連続5分を選ぶ</li>
+          <li><span class="who human">人</span><br>5分の区間の bbox と ID を 5 fps で直し、間を補完して元の fps で目視で確かめる</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="ask" id="ask-finetune">
+      <div class="ask-head"><span class="ask-label">論点 3 / 4</span><p class="ask-q">段階1 の bbox で Fine-Tuning するモデルを、会場ごとに作るか、1つの汎用モデルにするか</p></div>
+      <div class="ask-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>単位</th><th>得られるもの</th><th>懸念</th></tr></thead>
+            <tbody>
+              <tr><td>会場ごと（15モデル）</td><td class="wrap">その会場の床の色、照明、カメラの角度に合わせた下書き</td><td class="wrap">1会場300フレームで足りるか未確認。モデルが15個になる</td></tr>
+              <tr><td>1つの汎用モデル（15会場 ＋ Roboflow の公開画像）</td><td class="wrap">4,500フレームに公開画像を足せる。未学習の会場での精度を測れる</td><td class="wrap">会場ごとの量が偏る。公開画像は視点とクラス定義が違う</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>いまの案は汎用モデルで、公開画像を入れるかは最初の3会場の学習曲線で決める。</p>
+      </div>
+    </div>
+
+    <h3>Astra のトークン消費</h3>
+    <p>中央大の10秒での比較。
+複数フレームは読んだ画像が会話に積み上がるので、入力が約60倍になる。
+段階1 では1本の15フレームを1依頼で渡し、積み上がりを避ける。</p>
+
+    <div class="multiples" id="tokens"></div>
+
+    <p class="chart-title">3秒クリップの下書きに要る週の枠（複数フレーム、ChatGPT Plus の週単位）</p>
+    <div class="range" id="quota"></div>
+    <div class="legend">
+      <span><i class="k-span"></i>15フレームを1依頼で渡す形（1本 約0.7〜0.9%、未実測の見積もり）</span>
+      <span><i class="k-one"></i>Plus の1週分</span>
+    </div>
+    <p class="table-note">見積もりは <code>docs/annotation_protocol.md</code> の付録（1枚ずつの依頼103件の実測から換算、再試行分1割を加算）。</p>
+
+    <div class="ask" id="ask-codex">
+      <div class="ask-head"><span class="ask-label">論点 4 / 4</span><p class="ask-q">研究室で Codex を契約できないか</p></div>
+      <div class="ask-body">
+        <p>300本の下書きに Plus で約2.4〜3.0週かかる。
+Pro（枠5倍、月100ドル）なら1週に収まるが、個人では高い。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 03 ゼロショット評価 =============================== -->
+<div class="exp" id="s03">
+  <div class="exp-tag"><span class="exp-num">03</span><span>ゼロショット評価</span></div>
+  <div class="exp-body">
+    <h2>ベースラインモデル比較</h2>
+    <p>未着手で、ベースラインは後日選ぶ。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>モデル</th><th>学習ドメイン</th><th>これまでの目視の判定</th></tr></thead>
+        <tbody>
+          <tr><td>YOLO11x ＋ BoT-SORT</td><td>COCO</td><td><span class="chip hold">検出は可、追跡は不可</span></td></tr>
+          <tr><td>Deep-EIoU</td><td>SportsMOT</td><td><span class="chip pass">可</span></td></tr>
+          <tr><td>Deep-EIoU ＋ GTA（後処理）</td><td>ReID は SportsMOT</td><td><span class="chip pass">可</span></td></tr>
+          <tr><td>McByte（SAM ＋ Cutie）</td><td>SportsMOT ＋ SAM、Cutie</td><td><span class="chip fail">不可</span></td></tr>
+          <tr><td>RF-DETR Large</td><td>COCO</td><td><span class="chip hold">審判は拾う、奥の選手を落とす</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ 04 ファインチューニング評価 ======================= -->
+<div class="exp" id="s04">
+  <div class="exp-tag"><span class="exp-num">04</span><span>FT 評価</span></div>
+  <div class="exp-body">
+    <h2>フットサルのアノテーションで学習し直すと、どれだけ伸びるか</h2>
+    <p>未着手。
+最初に、段階1 の3秒で RF-DETR を学習する学習曲線を回し、1会場に要る本数を決める（白子と城西で学習、FFC東川口で別会場の評価）。</p>
+  </div>
+</div>
+
+<!-- ============ 締め ============================================== -->
+<section class="closing">
+  <p class="section-label">次にやること</p>
+  <h2>来週までの順序</h2>
+
+  <ol class="todo">
+    <li><span class="idx">1</span><span><strong>論点1から4を決める</strong></span></li>
+    <li><span class="idx">2</span><span><strong>最初の3会場の3秒を下書きし、人が直す</strong><span class="detail">週の枠が戻る 2026-09-20 以降。</span></span></li>
+    <li><span class="idx">3</span><span><strong>イベント時刻の判定基準を最初の3試合で試す</strong></span></li>
+    <li><span class="idx">4</span><span><strong>ゼロショット評価のベースラインを選ぶ</strong></span></li>
+  </ol>
+
+  <div class="colophon">
+    <p style="margin-bottom:0.4rem;">出典</p>
+    <ul>
+      <li>映像の母集団、会場、fps、関連データセット：<code>docs/dataset.html</code>、<code>data/manifest.tsv</code>（2026-09-11 時点）</li>
+      <li>SoccerTrack v2 の枠の本数とフレーム数：GTATrack（arXiv 2602.00484）の表2、2026-09-14 に確認</li>
+      <li>アノテーションの手順、測り方、使用枠の見積もり：<code>docs/annotation_protocol.md</code></li>
+      <li>3秒クリップ：<code>experiments/022-annotation-clips/</code>（dlbox10、2026-09-13 に430本を検証）</li>
+      <li>Deep-EIoU の枠：<code>experiments/012-deiou-auto-label/output/*/annotations.json</code></li>
+      <li>Astra 複数フレームの枠：<code>data/annotations/astra_raw_output/*/data/final/annotations.json</code>。トークンは中央を回した2つの Codex セッションの記録（2026-09-08 と 09-09 開始）</li>
+      <li>Astra 1枚ずつの枠とトークン：<code>experiments/011-astra-auto-label/per-image-no-substitutes/output/</code>（2026-09-14 実行）。審判の枠の数と見直しで消えた枠は <a href="https://github.com/riku359/futsal_ai/blob/main/reports/20260914-astra-per-image-011-no-substitutes.html">控え選手を推論させない版の報告</a></li>
+      <li>1枚ずつの依頼194件の週の枠：<code>experiments/011-astra-auto-label/per-image-inference/README.md</code> の記録</li>
+      <li>比較動画：3つのアノテーションを 2026-09-14 に描画（リポジトリ外のスクリプト）。落とした選手の枠の高さも同じ日に集計</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  function el(tag, attrs, text) {
+    var node = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) { node.setAttribute(k, attrs[k]); });
+    if (text != null) node.textContent = text;
+    return node;
+  }
+
+  function svgEl(tag, attrs, text) {
+    var node = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    Object.keys(attrs || {}).forEach(function (k) { node.setAttribute(k, attrs[k]); });
+    if (text != null) node.textContent = text;
+    return node;
+  }
+
+  function fmt(n) { return n.toLocaleString("en-US"); }
+
+  // ---------- horizontal bars ----------
+  function hbars(container, rows, max, unit) {
+    rows.forEach(function (r) {
+      var lbl = el("div", { "class": "lbl" }, r.label);
+      if (r.sub) lbl.appendChild(el("span", { "class": "cell-sub" }, r.sub));
+      var track = el("div", { "class": "track" });
+      var bar = el("div", { "class": "bar" + (r.em ? " em" : "") });
+      bar.style.width = "calc((100% - 5.5rem) * " + (r.value / max) + ")";
+      track.appendChild(bar);
+      track.appendChild(el("span", { "class": "val" }, (r.text || r.value) + (unit || "")));
+      container.appendChild(lbl);
+      container.appendChild(track);
+    });
+  }
+
+  hbars(document.getElementById("funnel"), [
+    { label: "全体", sub: "162本、80試合、18会場", value: 100.5 },
+    { label: "1 慶應の試合動画", sub: "113本、57試合、15会場", value: 72.1 },
+    { label: "2 会場が決まっている", sub: "111本、56試合、15会場", value: 70.6 },
+    { label: "3 固定カメラ", sub: "82本、43試合、15会場", value: 56.6, em: true }
+  ], 100.5, " 時間");
+
+  var venues = [
+    ["アネルフットサルパーク白子", 12, 24, 16.7], ["城西大学 坂戸キャンパス", 5, 11, 8.2],
+    ["児玉総合公園体育館(エコーピア)", 4, 6, 6.5], ["東京工業大学", 2, 4, 3.4],
+    ["秋葉台文化体育館", 2, 4, 3.2], ["FFC東川口", 4, 6, 2.9],
+    ["シンコースポーツ寒川アリーナ", 3, 6, 2.4], ["相模原ギオンアリーナ", 2, 5, 2.4],
+    ["神奈川県立スポーツセンター", 2, 2, 2.2], ["多摩大学 多摩キャンパス", 2, 3, 2.0],
+    ["春日部市総合体育館", 1, 2, 1.6], ["小金井総合体育館", 1, 2, 1.4],
+    ["MFP味の素スタジアム", 1, 2, 1.3], ["パデル&フットサル 晴れのち晴れ", 1, 2, 1.3],
+    ["府中市総合体育館", 1, 3, 1.1]
+  ];
+  hbars(document.getElementById("venue-bars"), venues.map(function (v) {
+    return { label: v[0], sub: v[1] + "試合、" + v[2] + "本", value: v[3], text: v[3].toFixed(1) };
+  }), 16.7, " h");
+
+  // ---------- match timeline ----------
+  (function () {
+    var host = document.getElementById("timeline");
+    var parts = [
+      { name: "前半", dur: 2354.3, clips: [534.9, 718.8, 1209.6, 1417.4, 1986.4] },
+      { name: "後半", dur: 2274.5, clips: [421.1, 722.5, 1240.8, 1498.6, 1765.4] }
+    ];
+    var W = 900, left = 176, right = 16, gap = 24;
+    var total = parts[0].dur + parts[1].dur;
+    var scale = (W - left - right - gap) / total;
+    var rowY = { video: 26, clip: 70, five: 116, event: 162 };
+    var H = 214;
+    var svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": "1試合の映像とアノテーション区間の配置" });
+
+    function label(y, text) {
+      svg.appendChild(svgEl("text", { x: 0, y: y + 5, "font-size": 12, fill: "var(--ink-muted)", style: "font-family:var(--font-body)" }, text));
+    }
+    label(rowY.video, "映像（前後半）");
+    label(rowY.clip, "3秒 × 10本（Astra）");
+    label(rowY.five, "5分の区間（RF-DETR）");
+    label(rowY.event, "イベント時刻");
+
+    var x = left;
+    parts.forEach(function (p) {
+      var w = p.dur * scale;
+      svg.appendChild(svgEl("rect", { x: x, y: rowY.video - 9, width: w, height: 18, fill: "var(--bar)", rx: 2 }));
+      svg.appendChild(svgEl("rect", { x: x, y: rowY.video - 9, width: 300 * scale, height: 18, fill: "var(--rule-strong)" }));
+      svg.appendChild(svgEl("rect", { x: x + w - 300 * scale, y: rowY.video - 9, width: 300 * scale, height: 18, fill: "var(--rule-strong)" }));
+      svg.appendChild(svgEl("text", { x: x + w / 2, y: rowY.video + 4, "font-size": 11, "text-anchor": "middle", fill: "var(--ink)", style: "font-family:var(--font-body)" }, p.name));
+      svg.appendChild(svgEl("rect", { x: x, y: rowY.event - 4, width: w, height: 8, fill: "var(--accent)", rx: 2 }));
+      p.clips.forEach(function (t) {
+        var cx = x + t * scale;
+        svg.appendChild(svgEl("rect", { x: cx - 1.5, y: rowY.clip - 11, width: 3, height: 22, fill: "var(--accent)" }));
+      });
+      x += w + gap;
+    });
+    svg.appendChild(svgEl("text", { x: left, y: rowY.event + 22, "font-size": 11, fill: "var(--ink-faint)", style: "font-family:var(--font-body)" }, "試合を通して打つ（最初と最後の5分も含む）"));
+
+    var fiveW = 300 * scale;
+    svg.appendChild(svgEl("rect", { x: left, y: rowY.five - 10, width: fiveW, height: 20, fill: "none", stroke: "var(--ink-faint)", "stroke-dasharray": "4 3" }));
+    svg.appendChild(svgEl("text", { x: left + fiveW + 10, y: rowY.five + 4, "font-size": 11, fill: "var(--ink-faint)", style: "font-family:var(--font-body)" }, "この幅で1本。位置はイベント時刻を人が直してから選ぶ"));
+
+    // time axis in minutes
+    var axisY = H - 6;
+    [0, 20, 40, 60, 77].forEach(function (m) {
+      var sec = m * 60;
+      var ax = sec <= parts[0].dur ? left + sec * scale : left + sec * scale + gap;
+      svg.appendChild(svgEl("text", { x: ax, y: axisY, "font-size": 10, "text-anchor": "middle", fill: "var(--ink-faint)" }, m + "分"));
+    });
+    host.appendChild(svg);
+  })();
+
+  // ---------- dot plot tables ----------
+  (function () {
+    var TW = 130, pad = 12;
+    function linX(v, max) { return pad + v / max * (TW - 2 * pad); }
+
+    function axis(host, ticks, max) {
+      var svg = svgEl("svg", { width: TW, height: 18, viewBox: "0 0 " + TW + " 18" });
+      ticks.forEach(function (t) {
+        svg.appendChild(svgEl("text", { x: linX(t[0], max), y: 14, "font-size": 10, "text-anchor": "middle", fill: "var(--ink-faint)" }, t[1]));
+      });
+      host.appendChild(svg);
+    }
+
+    // A stem from zero keeps small values readable on a linear scale.
+    function track(value, max, gridlines, isOurs, title) {
+      var svg = svgEl("svg", { width: TW, height: 20, viewBox: "0 0 " + TW + " 20" });
+      gridlines.forEach(function (t) {
+        svg.appendChild(svgEl("line", { x1: linX(t, max), x2: linX(t, max), y1: 3, y2: 17, stroke: "var(--rule)", "stroke-width": 1 }));
+      });
+      if (value == null) return svg;
+
+      var cx = linX(value, max);
+      var fill = isOurs ? "var(--accent)" : "var(--ink-muted)";
+      svg.appendChild(svgEl("line", { x1: linX(0, max), x2: cx, y1: 10, y2: 10, stroke: fill, "stroke-width": 2 }));
+      var c = svgEl("circle", { cx: cx, cy: 10, r: isOurs ? 6 : 5, fill: fill, stroke: "var(--surface)", "stroke-width": 2 });
+      c.appendChild(svgEl("title", {}, title));
+      svg.appendChild(c);
+      return svg;
+    }
+
+    function cell(text, subs, attrs) {
+      var td = el("td", attrs || {}, text);
+      (subs || []).forEach(function (sub) { td.appendChild(el("span", { "class": "cell-sub" }, sub)); });
+      return td;
+    }
+
+    // A row may override a dot column's label with <key>Text, its note with <key>Note,
+    // and the label for a missing value with <key>Missing.
+    function dotCell(r, col) {
+      var value = r[col.key];
+      var hasValue = value != null;
+      var valueText = hasValue ? (r[col.key + "Text"] || fmt(value)) + col.unit : (r[col.key + "Missing"] || "記載なし");
+      var note = r[col.key + "Note"];
+      var td = el("td", { "class": "dot-cell" });
+      td.appendChild(track(value, col.max, col.ticks.map(function (t) { return t[0]; }), r.isOurs, r.name + "：" + valueText));
+      td.appendChild(el("span", { "class": "dot-val" }, valueText + (note ? "（" + note + "）" : "")));
+      return td;
+    }
+
+    // Text columns are {key, isNumeric}; dot columns are {key, isDot, max, ticks, unit}.
+    function dotTable(tableId, columns, rows) {
+      var table = document.getElementById(tableId);
+      var axisHosts = table.querySelectorAll(".dot-axis");
+      columns.filter(function (c) { return c.isDot; }).forEach(function (c, i) { axis(axisHosts[i], c.ticks, c.max); });
+
+      var tbody = table.querySelector("tbody");
+      rows.forEach(function (r) {
+        var tr = el("tr", r.isOurs ? { "class": "ours" } : {});
+        columns.forEach(function (c) {
+          if (c.isDot) tr.appendChild(dotCell(r, c));
+          else tr.appendChild(cell(r[c.key], r[c.key + "Subs"], c.isNumeric ? { "class": "n" } : {}));
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Sub-lines are arrays so a long breakdown stacks instead of widening the table.
+    dotTable("dotplot-stage1", [
+      { key: "name" }, { key: "classes" },
+      { key: "images", isDot: true, max: 50000, unit: "", ticks: [[0, "0"], [25000, "25k"], [50000, "50k"]] }
+    ], [
+      { name: "RFDETR-Soccernet", nameSubs: ["サッカー、放送", "SoccerNet-Tracking 2023"], classes: "選手、GK、審判、ボール", images: 42750 },
+      { name: "Ours 段階1", nameSubs: ["フットサル、固定1台、15会場"], classes: "選手、GK、審判", images: 4500, imagesNote: "15会場 × 20本 × 15枚、5fps", isOurs: true },
+      { name: "Roboflow のテニス", nameSubs: ["テニス、放送", "コート面と照明が複数"], classes: "人、ボール", images: 85 }
+    ]);
+
+    dotTable("dotplot-stage2", [
+      { key: "name" }, { key: "matches", isNumeric: true }, { key: "length" }, { key: "sequences", isNumeric: true },
+      { key: "minutes", isDot: true, max: 250, unit: " 分", ticks: [[0, "0"], [100, "100"], [200, "200"]] },
+      { key: "frames", isDot: true, max: 400000, unit: "", ticks: [[0, "0"], [200000, "200k"], [400000, "400k"]] }
+    ], [
+      { name: "Ours 段階2", nameSubs: ["フットサル、5分の区間"], matches: "43", length: "5分（連続）", sequences: "43", minutes: 215, frames: 387000, framesNote: "30 fps 換算", isOurs: true },
+      { name: "TeamTrack", nameSubs: ["サッカー、バスケ、ハンド"], matches: "記載なし", length: "17.5〜30分", lengthSubs: ["サッカー 30、30", "バスケ 17.5、24、24", "ハンド 30"], sequences: "6", minutes: 155.5, frames: 279900 },
+      { name: "SoccerNet-Tracking", nameSubs: ["サッカー"], matches: "12", length: "30秒", sequences: "201", sequencesSubs: ["30秒が200", "45分の前後半が1"], minutes: 150, frames: 225375 },
+      { name: "SportsMOT", nameSubs: ["バスケ、バレー、サッカー"], matches: "記載なし", length: "平均約25秒", sequences: "240", minutes: 100, frames: 150379 },
+      { name: "TrackID3x3（ドローン）", nameSubs: ["3x3バスケ"], matches: "6", length: "試合を通し", sequences: "6", minutes: 92, frames: 127119 },
+      { name: "DanceTrack", nameSubs: ["ダンス"], matches: "該当なし", length: "平均約53秒", sequences: "100", minutes: 88, frames: 105855 },
+      { name: "PadelTracker100", nameSubs: ["パデル"], matches: "2", length: "約26分と約30分", sequences: "2", minutes: 55, frames: 99887 },
+      { name: "SoccerTrack v2", nameSubs: ["サッカー", "枠は挑戦用の区間だけ"], matches: "10", length: "4分", sequences: "10", minutes: 40, frames: 60000, framesNote: "換算" },
+      { name: "ホッケー", nameSubs: ["アイスホッケー"], matches: "9", length: "平均約44秒", sequences: "20", minutes: 15, frames: 26000, framesNote: "換算" },
+      { name: "de Pádua", nameSubs: ["フットサル"], matches: "2", length: "約7分", sequences: "2", minutes: 15, frames: 1700, framesNote: "換算" },
+      { name: "SoccerTrack v1（視点ごと）", nameSubs: ["サッカー"], matches: "記載なし", length: "30秒", sequences: "20", minutes: 10, frames: 18000, framesNote: "換算" },
+      { name: "MOT20", nameSubs: ["歩行者"], matches: "該当なし", length: "平均約67秒", sequences: "8", minutes: 9, frames: 13410 },
+      { name: "MOT17", nameSubs: ["歩行者"], matches: "該当なし", length: "平均約33秒", sequences: "14", minutes: 8, frames: 11235 },
+      { name: "ラグビー7人制", nameSubs: ["ラグビー"], matches: "3", length: "40秒", sequences: "3", minutes: 2, frames: 6000, framesNote: "換算" },
+      { name: "Paulichen", nameSubs: ["フットサル", "データは非公開"], matches: "記載なし", length: "40秒", sequences: "2", minutes: 1.33, frames: null }
+    ]);
+
+    dotTable("dotplot-stage3", [
+      { key: "name" }, { key: "matches", isNumeric: true }, { key: "labels" },
+      { key: "hours", isDot: true, max: 800, unit: " 時間", ticks: [[0, "0"], [400, "400"], [800, "800"]] },
+      { key: "events", isDot: true, max: 120000, unit: " 件", ticks: [[0, "0"], [60000, "60k"], [120000, "120k"]] }
+    ], [
+      { name: "SoccerNet-v2", nameSubs: ["サッカー、放送"], matches: "500", labels: "17クラス", hours: 764, events: 110458 },
+      { name: "Ours 段階3", nameSubs: ["フットサル、固定1台、15会場"], matches: "43", labels: "セットプレー3種、交代、得点", hours: 56.6, events: null, eventsMissing: "未測定", isOurs: true },
+      { name: "SoccerTrack v2", nameSubs: ["サッカー、固定のパノラマ 4K"], matches: "10", labels: "12クラス", hours: 15, hoursText: "約15", events: null },
+      { name: "Tennis", nameSubs: ["テニス、放送"], matches: "28", labels: "6クラス", hours: 13, hoursText: "約12〜14", events: 33791 },
+      { name: "FOOTPASS", nameSubs: ["サッカー、放送"], matches: "54", labels: "8クラス", hours: null, events: 102992 },
+      { name: "Ball Action Spotting 2024", nameSubs: ["サッカー、放送 720p"], matches: "7", labels: "12クラス", hours: null, events: null }
+    ]);
+  })();
+
+  // ---------- tokens: small multiples ----------
+  (function () {
+    var host = document.getElementById("tokens");
+    var metrics = [
+      { title: "入力", multiFrame: 19976473, perImage: 320208 },
+      { title: "キャッシュ外の入力", multiFrame: 1364377, perImage: 235472 },
+      { title: "出力", multiFrame: 82707, perImage: 16964 }
+    ];
+    metrics.forEach(function (m) {
+      var box = el("div", { "class": "multiple" });
+      box.appendChild(el("h4", {}, m.title + "（トークン）"));
+      var bars = el("div", { "class": "hbars" });
+      hbars(bars, [
+        { label: "複数フレーム", sub: "1つの会話", value: m.multiFrame, text: fmt(m.multiFrame) },
+        { label: "1枚ずつ", sub: "27依頼", value: m.perImage, text: fmt(m.perImage), em: true }
+      ], m.multiFrame, "");
+      box.appendChild(bars);
+      box.appendChild(el("p", { "class": "ratio" }, "複数フレームは1枚ずつの約 " + (m.multiFrame / m.perImage).toFixed(1) + " 倍"));
+      host.appendChild(box);
+    });
+  })();
+
+  // ---------- weekly quota ranges ----------
+  (function () {
+    var host = document.getElementById("quota");
+    var rows = [
+      ["150本（15会場 × 10）", 1.2, 1.5],
+      ["300本（15会場 × 20）", 2.4, 3.0],
+      ["450本（15会場 × 30）", 3.6, 4.5]
+    ];
+    var max = 5;
+    var gridWeeks = [0, 1, 2, 3, 4, 5];
+    function pct(v) { return (v / max * 100) + "%"; }
+    rows.forEach(function (r) {
+      var row = el("div", { "class": "range-row" });
+      row.appendChild(el("div", {}, r[0]));
+      var plot = el("div", { "class": "range-plot" });
+      gridWeeks.forEach(function (g) {
+        var line = el("div", { "class": "grid" });
+        line.style.left = pct(g);
+        plot.appendChild(line);
+      });
+      var one = el("div", { "class": "grid one" });
+      one.style.left = pct(1);
+      plot.appendChild(one);
+      var span = el("div", { "class": "span", title: r[1] + "〜" + r[2] + " 週" });
+      span.style.left = pct(r[1]);
+      span.style.width = "calc(" + pct(r[2] - r[1]) + " + 4px)";
+      plot.appendChild(span);
+      row.appendChild(plot);
+      host.appendChild(row);
+    });
+    var axisRow = el("div", { "class": "range-row range-axis" });
+    axisRow.appendChild(el("div", {}, ""));
+    var axisPlot = el("div", { "class": "range-plot" });
+    gridWeeks.forEach(function (g) {
+      var s = el("span", {}, g + "週");
+      s.style.left = pct(g);
+      axisPlot.appendChild(s);
+    });
+    axisRow.appendChild(axisPlot);
+    host.appendChild(axisRow);
+  })();
+
+  // ---------- video tabs ----------
+  (function () {
+    var buttons = document.querySelectorAll(".tabs button");
+    buttons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        buttons.forEach(function (b) {
+          var video = document.getElementById(b.getAttribute("aria-controls"));
+          var selected = b === button;
+          b.setAttribute("aria-selected", selected ? "true" : "false");
+          video.hidden = !selected;
+          if (!selected) video.pause();
+          else if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            var playing = video.play();
+            if (playing && playing.catch) playing.catch(function () {});
+          }
+        });
+      });
+    });
+  })();
+
+  // ---------- play only what is on screen ----------
+  (function () {
+    var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced || !("IntersectionObserver" in window)) return;
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var video = entry.target;
+        if (entry.isIntersecting && !video.hidden) {
+          var playing = video.play();
+          if (playing && playing.catch) playing.catch(function () {});
+        } else {
+          video.pause();
+        }
+      });
+    }, { threshold: 0.3 });
+    document.querySelectorAll("video").forEach(function (video) { observer.observe(video); });
+  })();
+})();
+</script>
+
+</body>
+</html>

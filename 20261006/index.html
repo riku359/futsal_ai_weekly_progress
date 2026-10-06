@@ -72,4 +72,22 @@ aria-labelledby="flow-title-unified flow-desc-unified">
 
 <p>2fpsの静止画では、離球やタッチライン通過の瞬間、ボールの軌道を追う情報が限られる。
 誤認が残る場面は、周辺の連続した動きと再開の経緯を確認することが次の検証課題である。</p></section>
+<section id="conclusion"><h2>まとめ</h2>
+<ul>
+<li>Astraは7割程度のイベントを正確に捉えたが、ドロップボールとFKや、クリアとシュートなど判断が難しい部分の誤りが見られた。また、画像が不鮮明な所の予測では前後フレームや周辺選手の位置や動きから推測がされたが、CKをKIと誤認識するなどのミスがあった。</li>
+<li>このようにドメイン特有の判別が難しいイベントや画像が不鮮明な所の認識精度を向上させる方針でVideo Action Spottingに取り組むのが良いかも。</li>
+<li>特にfoundation modelが台頭する現在、単なるfine-tuneではなく、foundation modelをzero-shotでドメイン適用する。みたいな方向性にすれば実用性が高いかも？アノテーションもtest dataだけですむし。</li>
+</ul></section>
+<section id="theme-contribution"><h2>Theme &amp; Contribution例</h2>
+<p><em>Do Foundation Models Transfer to Action Spotting in Amateur Fixed-Camera Futsal Videos?</em></p>
+<ul>
+<li>Publish an evaluation benchmark for action spotting in amateur futsal filmed with a fixed smartphones.</li>
+<li>An analysis of how well broadcast-trained spotting models and general-purpose foundation models transfer to this setting.</li>
+<li>A method, built on the failures found in that analysis, that improves on the foundation model alone.</li>
+</ul></section>
+<section id="next-step"><h2>Next Step</h2>
+<ul>
+<li>Video Action Spotting全般のサーベイ</li>
+<li>5分 * 43試合のイベントのアノテーションを進める</li>
+</ul></section>
 <footer class="key"><p>TP：GTと一致した予測。FP：対応するGTがない予測。FN：一致する予測がないGT。</p></footer></main><script>(function(){function reveal(){if(!location.hash)return;var target=document.getElementById(decodeURIComponent(location.hash.slice(1)));if(!target)return;for(var p=target;p;p=p.parentElement){if(p.tagName==='DETAILS')p.open=true;}requestAnimationFrame(function(){target.scrollIntoView({block:'start'});});}document.addEventListener('DOMContentLoaded',reveal);window.addEventListener('hashchange',reveal);document.addEventListener('click',function(event){var link=event.target.closest('a[href^="#"]');if(link&&link.hash===location.hash)reveal();});document.addEventListener('toggle',function(event){if(event.target.tagName==='DETAILS'&&!event.target.open){event.target.querySelectorAll('video').forEach(function(video){video.pause();});}},true);})();</script></body></html>

@@ -1,0 +1,2021 @@
+{
+  "raw_path": "/Users/RIKU/Desktop/futsal_ai/experiments/030-astra-action-spotting/outputs/raw/20240608_E_ryukei_full-001.json",
+  "raw_sha256": "31a422c6c29749f9c316d5203568858478930e37107d1394edea4e1fd668f8b6",
+  "reviewed_path": "/Users/RIKU/Desktop/futsal_ai/experiments/030-astra-action-spotting/outputs/reviewed/20240608_E_ryukei_full-001.json",
+  "reviewed_sha256": "7223359f031584e0bc4da258bb6f2d17c57ed9fa6c7e6eaf96f7a36385a98b2d",
+  "substitution_unit": "group",
+  "evaluated_on": "2026-10-05",
+  "evaluation_candidates": [
+    {
+      "label": "setplay",
+      "subtype": "kick_in",
+      "source_time_s": 312.75,
+      "confidence": 0.96,
+      "needs_review": true,
+      "evidence_frame_numbers": [
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27
+      ],
+      "infer_unseen_event": true,
+      "evidence": "Following a stoppage, a white player positions the ball at the right touchline and restarts play toward a teammate inside the court. Frame 26 shows the ball travelling away from the restart location.",
+      "timing_note": "Estimated release between frames 25 and 26, corresponding to 312.5–313.0 seconds. The first frame after foot contact requires video confirmation.",
+      "id": "astra-300-0",
+      "chunk_start_source_s": 300
+    },
+    {
+      "label": "setplay",
+      "subtype": "kick_in",
+      "source_time_s": 339.25,
+      "confidence": 0.97,
+      "needs_review": true,
+      "evidence_frame_numbers": [
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80
+      ],
+      "infer_unseen_event": true,
+      "evidence": "White player prepares a restart at the right touchline, then passes infield to white number 29. The ball is moving inside the court in frame 79.",
+      "timing_note": "Estimated release between frames 78 and 79, at 339.0 to 339.5 seconds.",
+      "id": "astra-330-0",
+      "chunk_start_source_s": 330
+    },
+    {
+      "label": "setplay",
+      "subtype": "kick_in",
+      "source_time_s": 351.5,
+      "confidence": 0.63,
+      "infer_unseen_event": true,
+      "evidence_frame_numbers": [
+        99,
+        100,
+        101,
+        102,
+        103,
+        104
+      ],
+      "evidence": "101〜102で奥側タッチライン付近の赤い選手が低い姿勢を取り、103〜104で攻撃がゴール方向へ進む。ボールが足を離れる瞬間は不鮮明なため、再開時刻は画像間の推定。",
+      "id": "reclassification-3-0",
+      "review_point_ids": [
+        3
+      ]
+    },
+    {
+      "label": "shot success",
+      "source_time_s": 352.0,
+      "confidence": 0.83,
+      "infer_unseen_event": true,
+      "evidence_frame_numbers": [
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110
+      ],
+      "evidence": "104で奥側ゴール前の赤い選手と青いキーパーが接近し、105〜106でキーパーが倒れる。その後の複数選手の挙手と集合が得点を支持する。シュートの正確な離球フレームと選手番号は識別できず、時刻は推定。",
+      "id": "reclassification-4-0",
+      "review_point_ids": [
+        4
+      ]
+    },
+    {
+      "label": "substitution",
+      "source_time_s": 365.0,
+      "confidence": 0.75,
+      "infer_unseen_event": true,
+      "evidence_frame_numbers": [
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        138,
+        141
+      ],
+      "evidence": "左側ベンチ前から先行して右奥へ走る赤選手を追跡でき、その後は赤6番として右側に配置する。タッチライン通過は365秒付近と推定。",
+      "id": "reclassification-5-0",
+      "review_point_ids": [
+        5
+      ],
+      "substitution_group_id": "review-5",
+      "player_count": 4,
+      "member_ids": [
+        "reclassification-5-0"
+      ]
+    },
+    {
+      "label": "setplay",
+      "subtype": "kickoff",
+      "source_time_s": 380.5,
+      "confidence": 0.72,
+      "infer_unseen_event": true,
+      "evidence_frame_numbers": [
+        155,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164
+      ],
+      "evidence": "160まで中央付近で白い選手と赤い守備者が待機し、161で中央のボールの移動、162以降で白い選手の前進と守備者の反応が見られる。離球の瞬間は直接識別できず、再開時刻は推定。",
+      "id": "reclassification-7-0",
+      "review_point_ids": [
+        7
+      ]
+    },
+    {
+      "label": "shot fail",
+      "source_time_s": 390.5,
+      "confidence": 0.66,
+      "infer_unseen_event": true,
+      "evidence_frame_numbers": [
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185
+      ],
+      "evidence": "180〜181で奥側ゴール前に選手が接近し、182〜183で青いキーパーが床面へ低く反応する。184以降は右側へプレーが続き、得点後の停止や祝福はない。シュートの離球は不鮮明で、時刻は推定。",
+      "id": "reclassification-8-0",
+      "review_point_ids": [
+        8
+      ]
+    },
+    {
+      "label": "setplay",
+      "subtype": "free_kick",
+      "source_time_s": 433.0,
+      "confidence": 0.86,
+      "infer_unseen_event": true,
+      "evidence_frame_numbers": [
+        259,
+        263,
+        264,
+        265,
+        266,
+        267,
+        268
+      ],
+      "evidence": "白29番の奥の選手が再開位置に立ち、審判が右へ退いた後にボールが左へ移動する。接触・離足の瞬間は選手とネットに重なるため、433.0秒を再開時刻として推定した。",
+      "id": "reclassification-11-0",
+      "review_point_ids": [
+        11
+      ]
+    },
+    {
+      "label": "setplay",
+      "subtype": "kick_in",
+      "source_time_s": 456.0,
+      "confidence": 0.98,
+      "needs_review": true,
+      "evidence_frame_numbers": [
+        308,
+        309,
+        310,
+        311,
+        312,
+        313
+      ],
+      "infer_unseen_event": false,
+      "id": "astra-450-0",
+      "chunk_start_source_s": 450
+    },
+    {
+      "label": "setplay",
+      "subtype": "kick_in",
+      "source_time_s": 470.5,
+      "confidence": 0.97,
+      "needs_review": true,
+      "evidence_frame_numbers": [
+        337,
+        338,
+        339,
+        340,
+        341,
+        342
+      ],
+      "infer_unseen_event": false,
+      "id": "astra-465-0",
+      "chunk_start_source_s": 465
+    },
+    {
+      "label": "setplay",
+      "subtype": "kick_in",
+      "source_time_s": 490.5,
+      "confidence": 0.95,
+      "needs_review": true,
+      "evidence_frame_numbers": [
+        376,
+        377,
+        378,
+        379,
+        380,
+        381,
+        382
+      ],
+      "infer_unseen_event": false,
+      "id": "astra-480-0",
+      "chunk_start_source_s": 480
+    },
+    {
+      "label": "shot fail",
+      "source_time_s": 502.0,
+      "confidence": 0.73,
+      "infer_unseen_event": true,
+      "evidence_frame_numbers": [
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408
+      ],
+      "evidence": "404でキーパーが構え、405・406でボールが手前へ進み、407でゴールライン外、408で外周ネットからの反発が見える。蹴った選手と離足瞬間は遠方の密集に隠れるため、軌道と反応から502.0秒のシュートを推定した。",
+      "id": "reclassification-14-0",
+      "review_point_ids": [
+        14
+      ]
+    },
+    {
+      "label": "setplay",
+      "subtype": "kick_in",
+      "source_time_s": 527.0,
+      "confidence": 0.57,
+      "infer_unseen_event": true,
+      "evidence_frame_numbers": [
+        450,
+        451,
+        452,
+        453,
+        454,
+        455,
+        456
+      ],
+      "evidence": "奥の左側の再開位置を囲む配置が続いた後、454〜456で複数選手が走り始め、ゴール前へプレーが進む。",
+      "id": "reclassification-17-0",
+      "review_point_ids": [
+        17
+      ]
+    },
+    {
+      "label": "setplay",
+      "subtype": "kick_in",
+      "source_time_s": 551.0,
+      "confidence": 0.65,
+      "infer_unseen_event": true,
+      "evidence_frame_numbers": [
+        497,
+        498,
+        499,
+        500,
+        501,
+        502,
+        503,
+        504,
+        505
+      ],
+      "evidence": "左奥のライン際での停止配置から、501〜503付近で周囲の選手が動き始め、その後右側へ展開する。離球時刻は画像間の変化から推定した。",
+      "id": "reclassification-21-0",
+      "review_point_ids": [
+        21
+      ]
+    },
+    {
+      "label": "setplay",
+      "subtype": "kick_in",
+      "source_time_s": 563.0,
+      "confidence": 0.7,
+      "infer_unseen_event": true,
+      "evidence_frame_numbers": [
+        522,
+        523,
+        524,
+        525,
+        526,
+        527,
+        528,
+        529,
+        530,
+        531
+      ],
+      "evidence": "右ライン際の白選手は525まで再開準備の姿勢を取り、526以降に内側の選手と守備側が動き、続いて右側への攻撃が進む。足から離れる瞬間は推定。",
+      "id": "reclassification-22-0",
+      "review_point_ids": [
+        22
+      ]
+    },
+    {
+      "label": "shot success",
+      "source_time_s": 576.75,
+      "confidence": 0.93,
+      "infer_unseen_event": true,
+      "evidence_frame_numbers": [
+        553,
+        554,
+        555,
+        556,
+        557,
+        558,
+        559,
+        564,
+        565
+      ],
+      "evidence": "553の白の選手のシュート動作に続き、554ではキーパーが低く構えて対応している。その後、赤の選手がゴール付近のボールを回収し、白の選手が戻って集まる。離球とゴールライン通過は画像間のため、離球時刻は576.5～577.0秒の中間値で推定した。",
+      "id": "reclassification-24-0",
+      "review_point_ids": [
+        24
+      ]
+    }
+  ],
+  "truth_count_by_label": {
+    "setplay": 10,
+    "shot success": 2,
+    "shot fail": 1,
+    "substitution": 2,
+    "shot own goal": 0
+  },
+  "prediction_count_by_label": {
+    "setplay": 11,
+    "shot success": 2,
+    "shot fail": 2,
+    "substitution": 1,
+    "shot own goal": 0
+  },
+  "scores": {
+    "tight": {
+      "averaged": {
+        "average_map": 0.7246654860291224,
+        "average_ap_by_label": {
+          "setplay": 0.6739964580873672,
+          "shot success": 1.0,
+          "shot fail": 0.5
+        },
+        "per_delta": [
+          {
+            "delta_s": 1,
+            "map": 0.7077922077922079,
+            "labels": {
+              "setplay": {
+                "ap": 0.6233766233766234,
+                "truth_count": 10,
+                "prediction_count": 11,
+                "true_positives": 6,
+                "precision": 0.5454545454545454,
+                "recall": 0.6
+              },
+              "shot success": {
+                "ap": 1.0,
+                "truth_count": 2,
+                "prediction_count": 2,
+                "true_positives": 2,
+                "precision": 1.0,
+                "recall": 1.0
+              },
+              "shot fail": {
+                "ap": 0.5,
+                "truth_count": 1,
+                "prediction_count": 2,
+                "true_positives": 1,
+                "precision": 0.5,
+                "recall": 1.0
+              }
+            }
+          },
+          {
+            "delta_s": 2,
+            "map": 0.7270759543486817,
+            "labels": {
+              "setplay": {
+                "ap": 0.6812278630460449,
+                "truth_count": 10,
+                "prediction_count": 11,
+                "true_positives": 7,
+                "precision": 0.6363636363636364,
+                "recall": 0.7
+              },
+              "shot success": {
+                "ap": 1.0,
+                "truth_count": 2,
+                "prediction_count": 2,
+                "true_positives": 2,
+                "precision": 1.0,
+                "recall": 1.0
+              },
+              "shot fail": {
+                "ap": 0.5,
+                "truth_count": 1,
+                "prediction_count": 2,
+                "true_positives": 1,
+                "precision": 0.5,
+                "recall": 1.0
+              }
+            }
+          },
+          {
+            "delta_s": 3,
+            "map": 0.7270759543486817,
+            "labels": {
+              "setplay": {
+                "ap": 0.6812278630460449,
+                "truth_count": 10,
+                "prediction_count": 11,
+                "true_positives": 7,
+                "precision": 0.6363636363636364,
+                "recall": 0.7
+              },
+              "shot success": {
+                "ap": 1.0,
+                "truth_count": 2,
+                "prediction_count": 2,
+                "true_positives": 2,
+                "precision": 1.0,
+                "recall": 1.0
+              },
+              "shot fail": {
+                "ap": 0.5,
+                "truth_count": 1,
+                "prediction_count": 2,
+                "true_positives": 1,
+                "precision": 0.5,
+                "recall": 1.0
+              }
+            }
+          },
+          {
+            "delta_s": 4,
+            "map": 0.7270759543486817,
+            "labels": {
+              "setplay": {
+                "ap": 0.6812278630460449,
+                "truth_count": 10,
+                "prediction_count": 11,
+                "true_positives": 7,
+                "precision": 0.6363636363636364,
+                "recall": 0.7
+              },
+              "shot success": {
+                "ap": 1.0,
+                "truth_count": 2,
+                "prediction_count": 2,
+                "true_positives": 2,
+                "precision": 1.0,
+                "recall": 1.0
+              },
+              "shot fail": {
+                "ap": 0.5,
+                "truth_count": 1,
+                "prediction_count": 2,
+                "true_positives": 1,
+                "precision": 0.5,
+                "recall": 1.0
+              }
+            }
+          },
+          {
+            "delta_s": 5,
+            "map": 0.7270759543486817,
+            "labels": {
+              "setplay": {
+                "ap": 0.6812278630460449,
+                "truth_count": 10,
+                "prediction_count": 11,
+                "true_positives": 7,
+                "precision": 0.6363636363636364,
+                "recall": 0.7
+              },
+              "shot success": {
+                "ap": 1.0,
+                "truth_count": 2,
+                "prediction_count": 2,
+                "true_positives": 2,
+                "precision": 1.0,
+                "recall": 1.0
+              },
+              "shot fail": {
+                "ap": 0.5,
+                "truth_count": 1,
+                "prediction_count": 2,
+                "true_positives": 1,
+                "precision": 0.5,
+                "recall": 1.0
+              }
+            }
+          }
+        ]
+      },
+      "separate": {
+        "average_map": 0.47727272727272724,
+        "average_ap_by_label": {
+          "substitution": 0.47727272727272724
+        },
+        "per_delta": [
+          {
+            "delta_s": 1,
+            "map": 0.0,
+            "labels": {
+              "substitution": {
+                "ap": 0.0,
+                "truth_count": 2,
+                "prediction_count": 1,
+                "true_positives": 0,
+                "precision": 0.0,
+                "recall": 0.0
+              }
+            }
+          },
+          {
+            "delta_s": 2,
+            "map": 0.5454545454545454,
+            "labels": {
+              "substitution": {
+                "ap": 0.5454545454545454,
+                "truth_count": 2,
+                "prediction_count": 1,
+                "true_positives": 1,
+                "precision": 1.0,
+                "recall": 0.5
+              }
+            }
+          },
+          {
+            "delta_s": 3,
+            "map": 0.5454545454545454,
+            "labels": {
+              "substitution": {
+                "ap": 0.5454545454545454,
+                "truth_count": 2,
+                "prediction_count": 1,
+                "true_positives": 1,
+                "precision": 1.0,
+                "recall": 0.5
+              }
+            }
+          },
+          {
+            "delta_s": 4,
+            "map": 0.5454545454545454,
+            "labels": {
+              "substitution": {
+                "ap": 0.5454545454545454,
+                "truth_count": 2,
+                "prediction_count": 1,
+                "true_positives": 1,
+                "precision": 1.0,
+                "recall": 0.5
+              }
+            }
+          },
+          {
+            "delta_s": 5,
+            "map": 0.5454545454545454,
+            "labels": {
+              "substitution": {
+                "ap": 0.5454545454545454,
+                "truth_count": 2,
+                "prediction_count": 1,
+                "true_positives": 1,
+                "precision": 1.0,
+                "recall": 0.5
+              }
+            }
+          }
+        ]
+      },
+      "all": {
+        "average_map": 0.6628172963400235,
+        "average_ap_by_label": {
+          "setplay": 0.6739964580873672,
+          "shot success": 1.0,
+          "shot fail": 0.5,
+          "substitution": 0.47727272727272724
+        },
+        "per_delta": [
+          {
+            "delta_s": 1,
+            "map": 0.5308441558441559,
+            "labels": {
+              "setplay": {
+                "ap": 0.6233766233766234,
+                "truth_count": 10,
+                "prediction_count": 11,
+                "true_positives": 6,
+                "precision": 0.5454545454545454,
+                "recall": 0.6
+              },
+              "shot success": {
+                "ap": 1.0,
+                "truth_count": 2,
+                "prediction_count": 2,
+                "true_positives": 2,
+                "precision": 1.0,
+                "recall": 1.0
+              },
+              "shot fail": {
+                "ap": 0.5,
+                "truth_count": 1,
+                "prediction_count": 2,
+                "true_positives": 1,
+                "precision": 0.5,
+                "recall": 1.0
+              },
+              "substitution": {
+                "ap": 0.0,
+                "truth_count": 2,
+                "prediction_count": 1,
+                "true_positives": 0,
+                "precision": 0.0,
+                "recall": 0.0
+              }
+            }
+          },
+          {
+            "delta_s": 2,
+            "map": 0.6816706021251476,
+            "labels": {
+              "setplay": {
+                "ap": 0.6812278630460449,
+                "truth_count": 10,
+                "prediction_count": 11,
+                "true_positives": 7,
+                "precision": 0.6363636363636364,
+                "recall": 0.7
+              },
+              "shot success": {
+                "ap": 1.0,
+                "truth_count": 2,
+                "prediction_count": 2,
+                "true_positives": 2,
+                "precision": 1.0,
+                "recall": 1.0
+              },
+              "shot fail": {
+                "ap": 0.5,
+                "truth_count": 1,
+                "prediction_count": 2,
+                "true_positives": 1,
+                "precision": 0.5,
+                "recall": 1.0
+              },
+              "substitution": {
+                "ap": 0.5454545454545454,
+                "truth_count": 2,
+                "prediction_count": 1,
+                "true_positives": 1,
+                "precision": 1.0,
+                "recall": 0.5
+              }
+            }
+          },
+          {
+            "delta_s": 3,
+            "map": 0.6816706021251476,
+            "labels": {
+              "setplay": {
+                "ap": 0.6812278630460449,
+                "truth_count": 10,
+                "prediction_count": 11,
+                "true_positives": 7,
+                "precision": 0.6363636363636364,
+                "recall": 0.7
+              },
+              "shot success": {
+                "ap": 1.0,
+                "truth_count": 2,
+                "prediction_count": 2,
+                "true_positives": 2,
+                "precision": 1.0,
+                "recall": 1.0
+              },
+              "shot fail": {
+                "ap": 0.5,
+                "truth_count": 1,
+                "prediction_count": 2,
+                "true_positives": 1,
+                "precision": 0.5,
+                "recall": 1.0
+              },
+              "substitution": {
+                "ap": 0.5454545454545454,
+                "truth_count": 2,
+                "prediction_count": 1,
+                "true_positives": 1,
+                "precision": 1.0,
+                "recall": 0.5
+              }
+            }
+          },
+          {
+            "delta_s": 4,
+            "map": 0.6816706021251476,
+            "labels": {
+              "setplay": {
+                "ap": 0.6812278630460449,
+                "truth_count": 10,
+                "prediction_count": 11,
+                "true_positives": 7,
+                "precision": 0.6363636363636364,
+                "recall": 0.7
+              },
+              "shot success": {
+                "ap": 1.0,
+                "truth_count": 2,
+                "prediction_count": 2,
+                "true_positives": 2,
+                "precision": 1.0,
+                "recall": 1.0
+              },
+              "shot fail": {
+                "ap": 0.5,
+                "truth_count": 1,
+                "prediction_count": 2,
+                "true_positives": 1,
+                "precision": 0.5,
+                "recall": 1.0
+              },
+              "substitution": {
+                "ap": 0.5454545454545454,
+                "truth_count": 2,
+                "prediction_count": 1,
+                "true_positives": 1,
+                "precision": 1.0,
+                "recall": 0.5
+              }
+            }
+          },
+          {
+            "delta_s": 5,
+            "map": 0.6816706021251476,
+            "labels": {
+              "setplay": {
+                "ap": 0.6812278630460449,
+                "truth_count": 10,
+                "prediction_count": 11,
+                "true_positives": 7,
+                "precision": 0.6363636363636364,
+                "recall": 0.7
+              },
+              "shot success": {
+                "ap": 1.0,
+                "truth_count": 2,
+                "prediction_count": 2,
+                "true_positives": 2,
+                "precision": 1.0,
+                "recall": 1.0
+              },
+              "shot fail": {
+                "ap": 0.5,
+                "truth_count": 1,
+                "prediction_count": 2,
+                "true_positives": 1,
+                "precision": 0.5,
+                "recall": 1.0
+              },
+              "substitution": {
+                "ap": 0.5454545454545454,
+                "truth_count": 2,
+                "prediction_count": 1,
+                "true_positives": 1,
+                "precision": 1.0,
+                "recall": 0.5
+              }
+            }
+          }
+        ]
+      }
+    },
+    "loose_15": {
+      "averaged": {
+        "average_map": 0.7345287288469107,
+        "average_ap_by_label": {
+          "setplay": 0.703586186540732,
+          "shot success": 1.0,
+          "shot fail": 0.5
+        },
+        "per_delta": [
+          {
+            "delta_s": 5,
+            "map": 0.7270759543486817,
+            "labels": {
+              "setplay": {
+                "ap": 0.6812278630460449,
+                "truth_count": 10,
+                "prediction_count": 11,
+                "true_positives": 7,
+                "precision": 0.6363636363636364,
+                "recall": 0.7
+              },
+              "shot success": {
+                "ap": 1.0,
+                "truth_count": 2,
+                "prediction_count": 2,
+                "true_positives": 2,
+                "precision": 1.0,
+                "recall": 1.0
+              },
+              "shot fail": {
+                "ap": 0.5,
+                "truth_count": 1,
+                "prediction_count": 2,
+                "true_positives": 1,
+                "precision": 0.5,
+                "recall": 1.0
+              }
+            }
+          },
+          {
+            "delta_s": 10,
+            "map": 0.7270759543486817,
+            "labels": {
+              "setplay": {
+                "ap": 0.6812278630460449,
+                "truth_count": 10,
+                "prediction_count": 11,
+                "true_positives": 7,
+                "precision": 0.6363636363636364,
+                "recall": 0.7
+              },
+              "shot success": {
+                "ap": 1.0,
+                "truth_count": 2,
+                "prediction_count": 2,
+                "true_positives": 2,
+                "precision": 1.0,
+                "recall": 1.0
+              },
+              "shot fail": {
+                "ap": 0.5,
+                "truth_count": 1,
+                "prediction_count": 2,
+                "true_positives": 1,
+                "precision": 0.5,
+                "recall": 1.0
+              }
+            }
+          },
+          {
+            "delta_s": 15,
+            "map": 0.7568870523415977,
+            "labels": {
+              "setplay": {
+                "ap": 0.7706611570247933,
+                "truth_count": 10,
+                "prediction_count": 11,
+                "true_positives": 8,
+                "precision": 0.7272727272727273,
+                "recall": 0.8
+              },
+              "shot success": {
+                "ap": 1.0,
+                "truth_count": 2,
+                "prediction_count": 2,
+                "true_positives": 2,
+                "precision": 1.0,
+                "recall": 1.0
+              },
+              "shot fail": {
+                "ap": 0.5,
+                "truth_count": 1,
+                "prediction_count": 2,
+                "true_positives": 1,
+                "precision": 0.5,
+                "recall": 1.0
+              }
+            }
+          }
+        ]
+      },
+      "separate": {
+        "average_map": 0.5454545454545454,
+        "average_ap_by_label": {
+          "substitution": 0.5454545454545454
+        },
+        "per_delta": [
+          {
+            "delta_s": 5,
+            "map": 0.5454545454545454,
+            "labels": {
+              "substitution": {
+                "ap": 0.5454545454545454,
+                "truth_count": 2,
+                "prediction_count": 1,
+                "true_positives": 1,
+                "precision": 1.0,
+                "recall": 0.5
+              }
+            }
+          },
+          {
+            "delta_s": 10,
+            "map": 0.5454545454545454,
+            "labels": {
+              "substitution": {
+                "ap": 0.5454545454545454,
+                "truth_count": 2,
+                "prediction_count": 1,
+                "true_positives": 1,
+                "precision": 1.0,
+                "recall": 0.5
+              }
+            }
+          },
+          {
+            "delta_s": 15,
+            "map": 0.5454545454545454,
+            "labels": {
+              "substitution": {
+                "ap": 0.5454545454545454,
+                "truth_count": 2,
+                "prediction_count": 1,
+                "true_positives": 1,
+                "precision": 1.0,
+                "recall": 0.5
+              }
+            }
+          }
+        ]
+      },
+      "all": {
+        "average_map": 0.6872601829988193,
+        "average_ap_by_label": {
+          "setplay": 0.703586186540732,
+          "shot success": 1.0,
+          "shot fail": 0.5,
+          "substitution": 0.5454545454545454
+        },
+        "per_delta": [
+          {
+            "delta_s": 5,
+            "map": 0.6816706021251476,
+            "labels": {
+              "setplay": {
+                "ap": 0.6812278630460449,
+                "truth_count": 10,
+                "prediction_count": 11,
+                "true_positives": 7,
+                "precision": 0.6363636363636364,
+                "recall": 0.7
+              },
+              "shot success": {
+                "ap": 1.0,
+                "truth_count": 2,
+                "prediction_count": 2,
+                "true_positives": 2,
+                "precision": 1.0,
+                "recall": 1.0
+              },
+              "shot fail": {
+                "ap": 0.5,
+                "truth_count": 1,
+                "prediction_count": 2,
+                "true_positives": 1,
+                "precision": 0.5,
+                "recall": 1.0
+              },
+              "substitution": {
+                "ap": 0.5454545454545454,
+                "truth_count": 2,
+                "prediction_count": 1,
+                "true_positives": 1,
+                "precision": 1.0,
+                "recall": 0.5
+              }
+            }
+          },
+          {
+            "delta_s": 10,
+            "map": 0.6816706021251476,
+            "labels": {
+              "setplay": {
+                "ap": 0.6812278630460449,
+                "truth_count": 10,
+                "prediction_count": 11,
+                "true_positives": 7,
+                "precision": 0.6363636363636364,
+                "recall": 0.7
+              },
+              "shot success": {
+                "ap": 1.0,
+                "truth_count": 2,
+                "prediction_count": 2,
+                "true_positives": 2,
+                "precision": 1.0,
+                "recall": 1.0
+              },
+              "shot fail": {
+                "ap": 0.5,
+                "truth_count": 1,
+                "prediction_count": 2,
+                "true_positives": 1,
+                "precision": 0.5,
+                "recall": 1.0
+              },
+              "substitution": {
+                "ap": 0.5454545454545454,
+                "truth_count": 2,
+                "prediction_count": 1,
+                "true_positives": 1,
+                "precision": 1.0,
+                "recall": 0.5
+              }
+            }
+          },
+          {
+            "delta_s": 15,
+            "map": 0.7040289256198347,
+            "labels": {
+              "setplay": {
+                "ap": 0.7706611570247933,
+                "truth_count": 10,
+                "prediction_count": 11,
+                "true_positives": 8,
+                "precision": 0.7272727272727273,
+                "recall": 0.8
+              },
+              "shot success": {
+                "ap": 1.0,
+                "truth_count": 2,
+                "prediction_count": 2,
+                "true_positives": 2,
+                "precision": 1.0,
+                "recall": 1.0
+              },
+              "shot fail": {
+                "ap": 0.5,
+                "truth_count": 1,
+                "prediction_count": 2,
+                "true_positives": 1,
+                "precision": 0.5,
+                "recall": 1.0
+              },
+              "substitution": {
+                "ap": 0.5454545454545454,
+                "truth_count": 2,
+                "prediction_count": 1,
+                "true_positives": 1,
+                "precision": 1.0,
+                "recall": 0.5
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "goal_clearance": {
+    "truth_count": 1,
+    "recall_by_delta_s": {
+      "1": 0.0,
+      "2": 0.0,
+      "3": 0.0,
+      "4": 0.0,
+      "5": 0.0,
+      "10": 0.0,
+      "15": 0.0
+    }
+  },
+  "by_visibility": {
+    "direct": {
+      "truth_count": 15,
+      "scores": {
+        "tight": {
+          "averaged": {
+            "average_map": 0.7246654860291224,
+            "average_ap_by_label": {
+              "setplay": 0.6739964580873672,
+              "shot success": 1.0,
+              "shot fail": 0.5
+            },
+            "per_delta": [
+              {
+                "delta_s": 1,
+                "map": 0.7077922077922079,
+                "labels": {
+                  "setplay": {
+                    "ap": 0.6233766233766234,
+                    "truth_count": 10,
+                    "prediction_count": 11,
+                    "true_positives": 6,
+                    "precision": 0.5454545454545454,
+                    "recall": 0.6
+                  },
+                  "shot success": {
+                    "ap": 1.0,
+                    "truth_count": 2,
+                    "prediction_count": 2,
+                    "true_positives": 2,
+                    "precision": 1.0,
+                    "recall": 1.0
+                  },
+                  "shot fail": {
+                    "ap": 0.5,
+                    "truth_count": 1,
+                    "prediction_count": 2,
+                    "true_positives": 1,
+                    "precision": 0.5,
+                    "recall": 1.0
+                  }
+                }
+              },
+              {
+                "delta_s": 2,
+                "map": 0.7270759543486817,
+                "labels": {
+                  "setplay": {
+                    "ap": 0.6812278630460449,
+                    "truth_count": 10,
+                    "prediction_count": 11,
+                    "true_positives": 7,
+                    "precision": 0.6363636363636364,
+                    "recall": 0.7
+                  },
+                  "shot success": {
+                    "ap": 1.0,
+                    "truth_count": 2,
+                    "prediction_count": 2,
+                    "true_positives": 2,
+                    "precision": 1.0,
+                    "recall": 1.0
+                  },
+                  "shot fail": {
+                    "ap": 0.5,
+                    "truth_count": 1,
+                    "prediction_count": 2,
+                    "true_positives": 1,
+                    "precision": 0.5,
+                    "recall": 1.0
+                  }
+                }
+              },
+              {
+                "delta_s": 3,
+                "map": 0.7270759543486817,
+                "labels": {
+                  "setplay": {
+                    "ap": 0.6812278630460449,
+                    "truth_count": 10,
+                    "prediction_count": 11,
+                    "true_positives": 7,
+                    "precision": 0.6363636363636364,
+                    "recall": 0.7
+                  },
+                  "shot success": {
+                    "ap": 1.0,
+                    "truth_count": 2,
+                    "prediction_count": 2,
+                    "true_positives": 2,
+                    "precision": 1.0,
+                    "recall": 1.0
+                  },
+                  "shot fail": {
+                    "ap": 0.5,
+                    "truth_count": 1,
+                    "prediction_count": 2,
+                    "true_positives": 1,
+                    "precision": 0.5,
+                    "recall": 1.0
+                  }
+                }
+              },
+              {
+                "delta_s": 4,
+                "map": 0.7270759543486817,
+                "labels": {
+                  "setplay": {
+                    "ap": 0.6812278630460449,
+                    "truth_count": 10,
+                    "prediction_count": 11,
+                    "true_positives": 7,
+                    "precision": 0.6363636363636364,
+                    "recall": 0.7
+                  },
+                  "shot success": {
+                    "ap": 1.0,
+                    "truth_count": 2,
+                    "prediction_count": 2,
+                    "true_positives": 2,
+                    "precision": 1.0,
+                    "recall": 1.0
+                  },
+                  "shot fail": {
+                    "ap": 0.5,
+                    "truth_count": 1,
+                    "prediction_count": 2,
+                    "true_positives": 1,
+                    "precision": 0.5,
+                    "recall": 1.0
+                  }
+                }
+              },
+              {
+                "delta_s": 5,
+                "map": 0.7270759543486817,
+                "labels": {
+                  "setplay": {
+                    "ap": 0.6812278630460449,
+                    "truth_count": 10,
+                    "prediction_count": 11,
+                    "true_positives": 7,
+                    "precision": 0.6363636363636364,
+                    "recall": 0.7
+                  },
+                  "shot success": {
+                    "ap": 1.0,
+                    "truth_count": 2,
+                    "prediction_count": 2,
+                    "true_positives": 2,
+                    "precision": 1.0,
+                    "recall": 1.0
+                  },
+                  "shot fail": {
+                    "ap": 0.5,
+                    "truth_count": 1,
+                    "prediction_count": 2,
+                    "true_positives": 1,
+                    "precision": 0.5,
+                    "recall": 1.0
+                  }
+                }
+              }
+            ]
+          },
+          "separate": {
+            "average_map": 0.47727272727272724,
+            "average_ap_by_label": {
+              "substitution": 0.47727272727272724
+            },
+            "per_delta": [
+              {
+                "delta_s": 1,
+                "map": 0.0,
+                "labels": {
+                  "substitution": {
+                    "ap": 0.0,
+                    "truth_count": 2,
+                    "prediction_count": 1,
+                    "true_positives": 0,
+                    "precision": 0.0,
+                    "recall": 0.0
+                  }
+                }
+              },
+              {
+                "delta_s": 2,
+                "map": 0.5454545454545454,
+                "labels": {
+                  "substitution": {
+                    "ap": 0.5454545454545454,
+                    "truth_count": 2,
+                    "prediction_count": 1,
+                    "true_positives": 1,
+                    "precision": 1.0,
+                    "recall": 0.5
+                  }
+                }
+              },
+              {
+                "delta_s": 3,
+                "map": 0.5454545454545454,
+                "labels": {
+                  "substitution": {
+                    "ap": 0.5454545454545454,
+                    "truth_count": 2,
+                    "prediction_count": 1,
+                    "true_positives": 1,
+                    "precision": 1.0,
+                    "recall": 0.5
+                  }
+                }
+              },
+              {
+                "delta_s": 4,
+                "map": 0.5454545454545454,
+                "labels": {
+                  "substitution": {
+                    "ap": 0.5454545454545454,
+                    "truth_count": 2,
+                    "prediction_count": 1,
+                    "true_positives": 1,
+                    "precision": 1.0,
+                    "recall": 0.5
+                  }
+                }
+              },
+              {
+                "delta_s": 5,
+                "map": 0.5454545454545454,
+                "labels": {
+                  "substitution": {
+                    "ap": 0.5454545454545454,
+                    "truth_count": 2,
+                    "prediction_count": 1,
+                    "true_positives": 1,
+                    "precision": 1.0,
+                    "recall": 0.5
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "loose_15": {
+          "averaged": {
+            "average_map": 0.7345287288469107,
+            "average_ap_by_label": {
+              "setplay": 0.703586186540732,
+              "shot success": 1.0,
+              "shot fail": 0.5
+            },
+            "per_delta": [
+              {
+                "delta_s": 5,
+                "map": 0.7270759543486817,
+                "labels": {
+                  "setplay": {
+                    "ap": 0.6812278630460449,
+                    "truth_count": 10,
+                    "prediction_count": 11,
+                    "true_positives": 7,
+                    "precision": 0.6363636363636364,
+                    "recall": 0.7
+                  },
+                  "shot success": {
+                    "ap": 1.0,
+                    "truth_count": 2,
+                    "prediction_count": 2,
+                    "true_positives": 2,
+                    "precision": 1.0,
+                    "recall": 1.0
+                  },
+                  "shot fail": {
+                    "ap": 0.5,
+                    "truth_count": 1,
+                    "prediction_count": 2,
+                    "true_positives": 1,
+                    "precision": 0.5,
+                    "recall": 1.0
+                  }
+                }
+              },
+              {
+                "delta_s": 10,
+                "map": 0.7270759543486817,
+                "labels": {
+                  "setplay": {
+                    "ap": 0.6812278630460449,
+                    "truth_count": 10,
+                    "prediction_count": 11,
+                    "true_positives": 7,
+                    "precision": 0.6363636363636364,
+                    "recall": 0.7
+                  },
+                  "shot success": {
+                    "ap": 1.0,
+                    "truth_count": 2,
+                    "prediction_count": 2,
+                    "true_positives": 2,
+                    "precision": 1.0,
+                    "recall": 1.0
+                  },
+                  "shot fail": {
+                    "ap": 0.5,
+                    "truth_count": 1,
+                    "prediction_count": 2,
+                    "true_positives": 1,
+                    "precision": 0.5,
+                    "recall": 1.0
+                  }
+                }
+              },
+              {
+                "delta_s": 15,
+                "map": 0.7568870523415977,
+                "labels": {
+                  "setplay": {
+                    "ap": 0.7706611570247933,
+                    "truth_count": 10,
+                    "prediction_count": 11,
+                    "true_positives": 8,
+                    "precision": 0.7272727272727273,
+                    "recall": 0.8
+                  },
+                  "shot success": {
+                    "ap": 1.0,
+                    "truth_count": 2,
+                    "prediction_count": 2,
+                    "true_positives": 2,
+                    "precision": 1.0,
+                    "recall": 1.0
+                  },
+                  "shot fail": {
+                    "ap": 0.5,
+                    "truth_count": 1,
+                    "prediction_count": 2,
+                    "true_positives": 1,
+                    "precision": 0.5,
+                    "recall": 1.0
+                  }
+                }
+              }
+            ]
+          },
+          "separate": {
+            "average_map": 0.5454545454545454,
+            "average_ap_by_label": {
+              "substitution": 0.5454545454545454
+            },
+            "per_delta": [
+              {
+                "delta_s": 5,
+                "map": 0.5454545454545454,
+                "labels": {
+                  "substitution": {
+                    "ap": 0.5454545454545454,
+                    "truth_count": 2,
+                    "prediction_count": 1,
+                    "true_positives": 1,
+                    "precision": 1.0,
+                    "recall": 0.5
+                  }
+                }
+              },
+              {
+                "delta_s": 10,
+                "map": 0.5454545454545454,
+                "labels": {
+                  "substitution": {
+                    "ap": 0.5454545454545454,
+                    "truth_count": 2,
+                    "prediction_count": 1,
+                    "true_positives": 1,
+                    "precision": 1.0,
+                    "recall": 0.5
+                  }
+                }
+              },
+              {
+                "delta_s": 15,
+                "map": 0.5454545454545454,
+                "labels": {
+                  "substitution": {
+                    "ap": 0.5454545454545454,
+                    "truth_count": 2,
+                    "prediction_count": 1,
+                    "true_positives": 1,
+                    "precision": 1.0,
+                    "recall": 0.5
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "inferred": {
+      "truth_count": 0,
+      "scores": null
+    }
+  },
+  "matching_policy": {
+    "setplay_subtype": "exact",
+    "substitution_player_count": "exact",
+    "time_grid_fps": 2,
+    "tolerance": "delta_s / 2"
+  },
+  "matching_by_delta_s": {
+    "1": {
+      "pairs": [
+        {
+          "truth_id": "astra-300-0",
+          "prediction_id": "astra-300-0"
+        },
+        {
+          "truth_id": "astra-330-0",
+          "prediction_id": "astra-330-0"
+        },
+        {
+          "truth_id": "astra-345-0",
+          "prediction_id": "reclassification-4-0"
+        },
+        {
+          "truth_id": "human-muowg5oc-4ech",
+          "prediction_id": "reclassification-7-0"
+        },
+        {
+          "truth_id": "human-muovp08l-vmfi",
+          "prediction_id": "reclassification-8-0"
+        },
+        {
+          "truth_id": "astra-450-0",
+          "prediction_id": "astra-450-0"
+        },
+        {
+          "truth_id": "astra-465-0",
+          "prediction_id": "astra-465-0"
+        },
+        {
+          "truth_id": "astra-480-0",
+          "prediction_id": "astra-480-0"
+        },
+        {
+          "truth_id": "astra-570-0",
+          "prediction_id": "reclassification-24-0"
+        }
+      ],
+      "tp_prediction_ids": [
+        "astra-300-0",
+        "astra-330-0",
+        "reclassification-4-0",
+        "reclassification-7-0",
+        "reclassification-8-0",
+        "astra-450-0",
+        "astra-465-0",
+        "astra-480-0",
+        "reclassification-24-0"
+      ],
+      "fp_prediction_ids": [
+        "reclassification-3-0",
+        "reclassification-5-0",
+        "reclassification-11-0",
+        "reclassification-14-0",
+        "reclassification-17-0",
+        "reclassification-21-0",
+        "reclassification-22-0"
+      ],
+      "fn_truth_ids": [
+        "human-muovjcwq-dron",
+        "human-muovng9x-6oc9",
+        "human-muow0pv5-3scy",
+        "human-muowcj76-n2me",
+        "human-muowdogd-ujcn",
+        "human-muoweljm-drc0"
+      ]
+    },
+    "2": {
+      "pairs": [
+        {
+          "truth_id": "astra-300-0",
+          "prediction_id": "astra-300-0"
+        },
+        {
+          "truth_id": "astra-330-0",
+          "prediction_id": "astra-330-0"
+        },
+        {
+          "truth_id": "astra-345-0",
+          "prediction_id": "reclassification-4-0"
+        },
+        {
+          "truth_id": "human-muovng9x-6oc9",
+          "prediction_id": "reclassification-5-0"
+        },
+        {
+          "truth_id": "human-muowg5oc-4ech",
+          "prediction_id": "reclassification-7-0"
+        },
+        {
+          "truth_id": "human-muovp08l-vmfi",
+          "prediction_id": "reclassification-8-0"
+        },
+        {
+          "truth_id": "astra-450-0",
+          "prediction_id": "astra-450-0"
+        },
+        {
+          "truth_id": "astra-465-0",
+          "prediction_id": "astra-465-0"
+        },
+        {
+          "truth_id": "astra-480-0",
+          "prediction_id": "astra-480-0"
+        },
+        {
+          "truth_id": "human-muow0pv5-3scy",
+          "prediction_id": "reclassification-17-0"
+        },
+        {
+          "truth_id": "astra-570-0",
+          "prediction_id": "reclassification-24-0"
+        }
+      ],
+      "tp_prediction_ids": [
+        "astra-300-0",
+        "astra-330-0",
+        "reclassification-4-0",
+        "reclassification-5-0",
+        "reclassification-7-0",
+        "reclassification-8-0",
+        "astra-450-0",
+        "astra-465-0",
+        "astra-480-0",
+        "reclassification-17-0",
+        "reclassification-24-0"
+      ],
+      "fp_prediction_ids": [
+        "reclassification-3-0",
+        "reclassification-11-0",
+        "reclassification-14-0",
+        "reclassification-21-0",
+        "reclassification-22-0"
+      ],
+      "fn_truth_ids": [
+        "human-muovjcwq-dron",
+        "human-muowcj76-n2me",
+        "human-muowdogd-ujcn",
+        "human-muoweljm-drc0"
+      ]
+    },
+    "3": {
+      "pairs": [
+        {
+          "truth_id": "astra-300-0",
+          "prediction_id": "astra-300-0"
+        },
+        {
+          "truth_id": "astra-330-0",
+          "prediction_id": "astra-330-0"
+        },
+        {
+          "truth_id": "astra-345-0",
+          "prediction_id": "reclassification-4-0"
+        },
+        {
+          "truth_id": "human-muovng9x-6oc9",
+          "prediction_id": "reclassification-5-0"
+        },
+        {
+          "truth_id": "human-muowg5oc-4ech",
+          "prediction_id": "reclassification-7-0"
+        },
+        {
+          "truth_id": "human-muovp08l-vmfi",
+          "prediction_id": "reclassification-8-0"
+        },
+        {
+          "truth_id": "astra-450-0",
+          "prediction_id": "astra-450-0"
+        },
+        {
+          "truth_id": "astra-465-0",
+          "prediction_id": "astra-465-0"
+        },
+        {
+          "truth_id": "astra-480-0",
+          "prediction_id": "astra-480-0"
+        },
+        {
+          "truth_id": "human-muow0pv5-3scy",
+          "prediction_id": "reclassification-17-0"
+        },
+        {
+          "truth_id": "astra-570-0",
+          "prediction_id": "reclassification-24-0"
+        }
+      ],
+      "tp_prediction_ids": [
+        "astra-300-0",
+        "astra-330-0",
+        "reclassification-4-0",
+        "reclassification-5-0",
+        "reclassification-7-0",
+        "reclassification-8-0",
+        "astra-450-0",
+        "astra-465-0",
+        "astra-480-0",
+        "reclassification-17-0",
+        "reclassification-24-0"
+      ],
+      "fp_prediction_ids": [
+        "reclassification-3-0",
+        "reclassification-11-0",
+        "reclassification-14-0",
+        "reclassification-21-0",
+        "reclassification-22-0"
+      ],
+      "fn_truth_ids": [
+        "human-muovjcwq-dron",
+        "human-muowcj76-n2me",
+        "human-muowdogd-ujcn",
+        "human-muoweljm-drc0"
+      ]
+    },
+    "4": {
+      "pairs": [
+        {
+          "truth_id": "astra-300-0",
+          "prediction_id": "astra-300-0"
+        },
+        {
+          "truth_id": "astra-330-0",
+          "prediction_id": "astra-330-0"
+        },
+        {
+          "truth_id": "astra-345-0",
+          "prediction_id": "reclassification-4-0"
+        },
+        {
+          "truth_id": "human-muovng9x-6oc9",
+          "prediction_id": "reclassification-5-0"
+        },
+        {
+          "truth_id": "human-muowg5oc-4ech",
+          "prediction_id": "reclassification-7-0"
+        },
+        {
+          "truth_id": "human-muovp08l-vmfi",
+          "prediction_id": "reclassification-8-0"
+        },
+        {
+          "truth_id": "astra-450-0",
+          "prediction_id": "astra-450-0"
+        },
+        {
+          "truth_id": "astra-465-0",
+          "prediction_id": "astra-465-0"
+        },
+        {
+          "truth_id": "astra-480-0",
+          "prediction_id": "astra-480-0"
+        },
+        {
+          "truth_id": "human-muow0pv5-3scy",
+          "prediction_id": "reclassification-17-0"
+        },
+        {
+          "truth_id": "astra-570-0",
+          "prediction_id": "reclassification-24-0"
+        }
+      ],
+      "tp_prediction_ids": [
+        "astra-300-0",
+        "astra-330-0",
+        "reclassification-4-0",
+        "reclassification-5-0",
+        "reclassification-7-0",
+        "reclassification-8-0",
+        "astra-450-0",
+        "astra-465-0",
+        "astra-480-0",
+        "reclassification-17-0",
+        "reclassification-24-0"
+      ],
+      "fp_prediction_ids": [
+        "reclassification-3-0",
+        "reclassification-11-0",
+        "reclassification-14-0",
+        "reclassification-21-0",
+        "reclassification-22-0"
+      ],
+      "fn_truth_ids": [
+        "human-muovjcwq-dron",
+        "human-muowcj76-n2me",
+        "human-muowdogd-ujcn",
+        "human-muoweljm-drc0"
+      ]
+    },
+    "5": {
+      "pairs": [
+        {
+          "truth_id": "astra-300-0",
+          "prediction_id": "astra-300-0"
+        },
+        {
+          "truth_id": "astra-330-0",
+          "prediction_id": "astra-330-0"
+        },
+        {
+          "truth_id": "astra-345-0",
+          "prediction_id": "reclassification-4-0"
+        },
+        {
+          "truth_id": "human-muovng9x-6oc9",
+          "prediction_id": "reclassification-5-0"
+        },
+        {
+          "truth_id": "human-muowg5oc-4ech",
+          "prediction_id": "reclassification-7-0"
+        },
+        {
+          "truth_id": "human-muovp08l-vmfi",
+          "prediction_id": "reclassification-8-0"
+        },
+        {
+          "truth_id": "astra-450-0",
+          "prediction_id": "astra-450-0"
+        },
+        {
+          "truth_id": "astra-465-0",
+          "prediction_id": "astra-465-0"
+        },
+        {
+          "truth_id": "astra-480-0",
+          "prediction_id": "astra-480-0"
+        },
+        {
+          "truth_id": "human-muow0pv5-3scy",
+          "prediction_id": "reclassification-17-0"
+        },
+        {
+          "truth_id": "astra-570-0",
+          "prediction_id": "reclassification-24-0"
+        }
+      ],
+      "tp_prediction_ids": [
+        "astra-300-0",
+        "astra-330-0",
+        "reclassification-4-0",
+        "reclassification-5-0",
+        "reclassification-7-0",
+        "reclassification-8-0",
+        "astra-450-0",
+        "astra-465-0",
+        "astra-480-0",
+        "reclassification-17-0",
+        "reclassification-24-0"
+      ],
+      "fp_prediction_ids": [
+        "reclassification-3-0",
+        "reclassification-11-0",
+        "reclassification-14-0",
+        "reclassification-21-0",
+        "reclassification-22-0"
+      ],
+      "fn_truth_ids": [
+        "human-muovjcwq-dron",
+        "human-muowcj76-n2me",
+        "human-muowdogd-ujcn",
+        "human-muoweljm-drc0"
+      ]
+    },
+    "10": {
+      "pairs": [
+        {
+          "truth_id": "astra-300-0",
+          "prediction_id": "astra-300-0"
+        },
+        {
+          "truth_id": "astra-330-0",
+          "prediction_id": "astra-330-0"
+        },
+        {
+          "truth_id": "astra-345-0",
+          "prediction_id": "reclassification-4-0"
+        },
+        {
+          "truth_id": "human-muovng9x-6oc9",
+          "prediction_id": "reclassification-5-0"
+        },
+        {
+          "truth_id": "human-muowg5oc-4ech",
+          "prediction_id": "reclassification-7-0"
+        },
+        {
+          "truth_id": "human-muovp08l-vmfi",
+          "prediction_id": "reclassification-8-0"
+        },
+        {
+          "truth_id": "astra-450-0",
+          "prediction_id": "astra-450-0"
+        },
+        {
+          "truth_id": "astra-465-0",
+          "prediction_id": "astra-465-0"
+        },
+        {
+          "truth_id": "astra-480-0",
+          "prediction_id": "astra-480-0"
+        },
+        {
+          "truth_id": "human-muow0pv5-3scy",
+          "prediction_id": "reclassification-17-0"
+        },
+        {
+          "truth_id": "astra-570-0",
+          "prediction_id": "reclassification-24-0"
+        }
+      ],
+      "tp_prediction_ids": [
+        "astra-300-0",
+        "astra-330-0",
+        "reclassification-4-0",
+        "reclassification-5-0",
+        "reclassification-7-0",
+        "reclassification-8-0",
+        "astra-450-0",
+        "astra-465-0",
+        "astra-480-0",
+        "reclassification-17-0",
+        "reclassification-24-0"
+      ],
+      "fp_prediction_ids": [
+        "reclassification-3-0",
+        "reclassification-11-0",
+        "reclassification-14-0",
+        "reclassification-21-0",
+        "reclassification-22-0"
+      ],
+      "fn_truth_ids": [
+        "human-muovjcwq-dron",
+        "human-muowcj76-n2me",
+        "human-muowdogd-ujcn",
+        "human-muoweljm-drc0"
+      ]
+    },
+    "15": {
+      "pairs": [
+        {
+          "truth_id": "astra-300-0",
+          "prediction_id": "astra-300-0"
+        },
+        {
+          "truth_id": "astra-330-0",
+          "prediction_id": "astra-330-0"
+        },
+        {
+          "truth_id": "astra-345-0",
+          "prediction_id": "reclassification-4-0"
+        },
+        {
+          "truth_id": "human-muovng9x-6oc9",
+          "prediction_id": "reclassification-5-0"
+        },
+        {
+          "truth_id": "human-muowg5oc-4ech",
+          "prediction_id": "reclassification-7-0"
+        },
+        {
+          "truth_id": "human-muovp08l-vmfi",
+          "prediction_id": "reclassification-8-0"
+        },
+        {
+          "truth_id": "astra-450-0",
+          "prediction_id": "astra-450-0"
+        },
+        {
+          "truth_id": "astra-465-0",
+          "prediction_id": "astra-465-0"
+        },
+        {
+          "truth_id": "astra-480-0",
+          "prediction_id": "astra-480-0"
+        },
+        {
+          "truth_id": "human-muow0pv5-3scy",
+          "prediction_id": "reclassification-17-0"
+        },
+        {
+          "truth_id": "human-muowdogd-ujcn",
+          "prediction_id": "reclassification-22-0"
+        },
+        {
+          "truth_id": "astra-570-0",
+          "prediction_id": "reclassification-24-0"
+        }
+      ],
+      "tp_prediction_ids": [
+        "astra-300-0",
+        "astra-330-0",
+        "reclassification-4-0",
+        "reclassification-5-0",
+        "reclassification-7-0",
+        "reclassification-8-0",
+        "astra-450-0",
+        "astra-465-0",
+        "astra-480-0",
+        "reclassification-17-0",
+        "reclassification-22-0",
+        "reclassification-24-0"
+      ],
+      "fp_prediction_ids": [
+        "reclassification-3-0",
+        "reclassification-11-0",
+        "reclassification-14-0",
+        "reclassification-21-0"
+      ],
+      "fn_truth_ids": [
+        "human-muovjcwq-dron",
+        "human-muowcj76-n2me",
+        "human-muoweljm-drc0"
+      ]
+    }
+  }
+}

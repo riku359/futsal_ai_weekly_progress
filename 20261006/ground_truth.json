@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "match_id": "20240608_E_ryukei",
+  "run_id": "full-001",
+  "raw_path": "outputs/raw/20240608_E_ryukei_full-001.json",
+  "raw_sha256": "31a422c6c29749f9c316d5203568858478930e37107d1394edea4e1fd668f8b6",
+  "video_path": "clips/20240608_E_ryukei_05m00s_10m00s.mp4",
+  "source_start_s": 300,
+  "source_end_s": 600,
+  "events": [
+    {
+      "id": "astra-300-0",
+      "label": "setplay",
+      "subtype": "kick_in",
+      "source_time_s": 312.75,
+      "visibility": "direct",
+      "origin": "astra",
+      "astra_candidate_id": "astra-300-0",
+      "status": "accepted",
+      "note": ""
+    },
+    {
+      "id": "astra-330-0",
+      "label": "setplay",
+      "subtype": "kick_in",
+      "source_time_s": 339.25,
+      "visibility": "direct",
+      "origin": "astra",
+      "astra_candidate_id": "astra-330-0",
+      "status": "accepted",
+      "note": ""
+    },
+    {
+      "id": "human-muovjcwq-dron",
+      "label": "setplay",
+      "subtype": "corner_kick",
+      "source_time_s": 350.933,
+      "visibility": "direct",
+      "origin": "human",
+      "astra_candidate_id": null,
+      "status": "accepted",
+      "note": ""
+    },
+    {
+      "id": "astra-345-0",
+      "label": "shot success",
+      "subtype": null,
+      "source_time_s": 352.133,
+      "visibility": "direct",
+      "origin": "astra",
+      "astra_candidate_id": "astra-345-0",
+      "status": "accepted",
+      "note": ""
+    },
+    {
+      "id": "human-muovng9x-6oc9",
+      "label": "substitution",
+      "subtype": null,
+      "source_time_s": 364.2,
+      "visibility": "direct",
+      "origin": "human",
+      "astra_candidate_id": null,
+      "status": "accepted",
+      "note": "まとまった4人の交代。人数はユーザーの映像確認による。先頭の入場時刻は既存の人手打刻。",
+      "player_count": 4
+    },
+    {
+      "id": "human-muowg5oc-4ech",
+      "label": "setplay",
+      "subtype": "kickoff",
+      "source_time_s": 380.267,
+      "visibility": "direct",
+      "origin": "human",
+      "astra_candidate_id": null,
+      "status": "accepted",
+      "note": ""
+    },
+    {
+      "id": "human-muovp08l-vmfi",
+      "label": "shot fail",
+      "subtype": null,
+      "source_time_s": 390.467,
+      "visibility": "direct",
+      "origin": "human",
+      "astra_candidate_id": null,
+      "status": "accepted",
+      "note": ""
+    },
+    {
+      "id": "astra-420-0",
+      "label": "setplay",
+      "subtype": "free_kick",
+      "source_time_s": 433,
+      "visibility": "direct",
+      "origin": "astra",
+      "astra_candidate_id": "astra-420-0",
+      "status": "rejected",
+      "note": "setplayではなくdrop ball"
+    },
+    {
+      "id": "astra-450-0",
+      "label": "setplay",
+      "subtype": "kick_in",
+      "source_time_s": 456,
+      "visibility": "direct",
+      "origin": "astra",
+      "astra_candidate_id": "astra-450-0",
+      "status": "accepted",
+      "note": ""
+    },
+    {
+      "id": "astra-465-0",
+      "label": "setplay",
+      "subtype": "kick_in",
+      "source_time_s": 470.5,
+      "visibility": "direct",
+      "origin": "astra",
+      "astra_candidate_id": "astra-465-0",
+      "status": "accepted",
+      "note": ""
+    },
+    {
+      "id": "astra-480-0",
+      "label": "setplay",
+      "subtype": "kick_in",
+      "source_time_s": 490.5,
+      "visibility": "direct",
+      "origin": "astra",
+      "astra_candidate_id": "astra-480-0",
+      "status": "accepted",
+      "note": ""
+    },
+    {
+      "id": "astra-495-0",
+      "label": "shot fail",
+      "subtype": null,
+      "source_time_s": 502,
+      "visibility": null,
+      "origin": "astra",
+      "astra_candidate_id": "astra-495-0",
+      "status": "rejected",
+      "note": "クリアである"
+    },
+    {
+      "id": "human-muow0pv5-3scy",
+      "label": "setplay",
+      "subtype": "kick_in",
+      "source_time_s": 526.4,
+      "visibility": "direct",
+      "origin": "human",
+      "astra_candidate_id": null,
+      "status": "accepted",
+      "note": ""
+    },
+    {
+      "id": "human-muowcj76-n2me",
+      "label": "substitution",
+      "subtype": null,
+      "source_time_s": 546.267,
+      "visibility": "direct",
+      "origin": "human",
+      "astra_candidate_id": null,
+      "status": "accepted",
+      "note": "まとまった4人の交代。人数はユーザーの映像確認による。先頭の入場時刻は既存の人手打刻。",
+      "player_count": 4
+    },
+    {
+      "id": "human-muowdogd-ujcn",
+      "label": "setplay",
+      "subtype": "kick_in",
+      "source_time_s": 556.933,
+      "visibility": "direct",
+      "origin": "human",
+      "astra_candidate_id": null,
+      "status": "accepted",
+      "note": ""
+    },
+    {
+      "id": "human-muoweljm-drc0",
+      "label": "setplay",
+      "subtype": "goal_clearance",
+      "source_time_s": 565.6,
+      "visibility": "direct",
+      "origin": "human",
+      "astra_candidate_id": null,
+      "status": "accepted",
+      "note": ""
+    },
+    {
+      "id": "astra-570-0",
+      "label": "shot success",
+      "subtype": null,
+      "source_time_s": 576.75,
+      "visibility": "direct",
+      "origin": "astra",
+      "astra_candidate_id": "astra-570-0",
+      "status": "accepted",
+      "note": ""
+    }
+  ],
+  "unresolved_segments": [],
+  "watched_intervals": [
+    [
+      300.04,
+      330.692
+    ],
+    [
+      331.367,
+      337.941
+    ],
+    [
+      338.5,
+      428.572
+    ],
+    [
+      429.767,
+      600
+    ]
+  ],
+  "full_pass_completed": true,
+  "completed_at": "2026-10-01T11:14:16+09:00",
+  "updated_at": "2026-10-05T16:53:22+09:00",
+  "substitution_unit": "group"
+}

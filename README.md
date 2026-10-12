@@ -2,6 +2,7 @@
 
 | 日付 | 報告 |
 | --- | --- |
+| 2026-10-13 | [専用モデルへの蒸留とSuper Resolution](20261013/index.html) |
 | 2026-10-06 | [Astraによるイベント検知の結果](20261006/index.html) |
 | 2026-10-01 | [Astra によるイベント検知](https://riku359.github.io/futsal_ai_weekly_progress/20261001/) |
 | 2026-09-29 | [Astra Auto Label](https://riku359.github.io/futsal_ai_weekly_progress/20260929/) |

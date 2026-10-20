@@ -1,0 +1,277 @@
+/* futsal 実験報告のための document.css への追加。
+ *
+ * document.css は mathbullet/skills の複製なので直接編集しない。
+ * 追加する部品はすべてこのファイルに置き、色は document.css の変数を参照する。
+ *
+ * 判定の3値を単色で表すのは、デザインシステムが有彩色をリンク青とアクセント赤の
+ * 2色に限っているためである。判定は1ページに何度も現れるので、赤を使えない。
+ */
+
+/* ---- 動画 ---------------------------------------------------------- */
+
+.fx-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #000;
+  border-radius: calc(var(--mb-radius) - 4px);
+}
+
+.fx-video-stack {
+  display: grid;
+  gap: 10px;
+  padding: 0 0 18px;
+  overflow: hidden;
+}
+
+.fx-video-stack .mb-card-label {
+  padding: 0 16px;
+}
+
+.fx-video-stack .mb-card-label:first-child {
+  margin-top: 14px;
+}
+
+.fx-video-stack .mb-card-label:not(:first-child) {
+  margin-top: 18px;
+}
+
+.mb-figure-frame:has(> .fx-video) {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* figcaption は中央揃えなので、そのまま置くと複数行の説明が読みにくい。
+   注記だけ左揃えに戻す。 */
+.fx-video-note {
+  margin: 10px auto 0;
+  max-width: 60ch;
+  text-align: left;
+  font-size: 13.5px;
+  color: var(--mb-muted);
+  line-height: 1.75;
+}
+
+/* 動画が手元に無いときの代替。git には HTML だけが入るので、
+   別の機体で開くと動画は欠ける。欠けたことが分かる形にする。 */
+.fx-missing {
+  padding: 28px 20px;
+  text-align: center;
+  font-family: var(--mb-font-mono);
+  font-size: 13px;
+  color: var(--mb-faint);
+  border: var(--mb-border-w) dashed var(--mb-rule);
+  border-radius: calc(var(--mb-radius) - 4px);
+}
+
+/* ---- 判定 ---------------------------------------------------------- */
+
+.fx-verdict {
+  display: inline-block;
+  font-family: var(--mb-font-mono);
+  font-size: 12px;
+  line-height: 1;
+  padding: 5px 9px;
+  border-radius: 999px;
+  border: var(--mb-border-w) solid var(--mb-ink);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.fx-verdict[data-v="可"]   { background: var(--mb-ink); color: var(--mb-surface); }
+.fx-verdict[data-v="不可"] { background: var(--mb-surface); color: var(--mb-ink); }
+.fx-verdict[data-v="保留"] { background: var(--mb-surface); color: var(--mb-faint); border-color: var(--mb-rule); }
+
+/* ---- 索引 ---------------------------------------------------------- */
+
+.fx-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 32px;
+  padding: 14px 16px;
+  background: var(--mb-surface);
+  border: var(--mb-border-w) solid var(--mb-ink);
+  border-radius: var(--mb-radius);
+}
+.fx-filters .fx-filter-label {
+  font-family: var(--mb-font-mono);
+  font-size: 12px;
+  color: var(--mb-muted);
+  margin-right: 2px;
+}
+.fx-filters .fx-filter-label:not(:first-child) { margin-left: 14px; }
+
+.fx-toggle {
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: var(--mb-border-w) solid var(--mb-rule);
+  background: var(--mb-surface);
+  color: var(--mb-muted);
+  cursor: pointer;
+}
+.fx-toggle:hover { border-color: var(--mb-ink); color: var(--mb-ink); }
+.fx-toggle[aria-pressed="true"] {
+  background: var(--mb-ink);
+  border-color: var(--mb-ink);
+  color: var(--mb-surface);
+}
+.fx-toggle:focus-visible { outline: 2px solid var(--mb-link); outline-offset: 2px; }
+
+.fx-group { margin: 0; }
+.fx-group[hidden] { display: none; }
+
+.fx-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 4px;
+}
+/* h2 の既定の上余白がそのままだと節の間が空きすぎる。 */
+.fx-group-head h2 { margin-top: 44px; }
+.fx-group-count {
+  font-family: var(--mb-font-mono);
+  font-size: 12.5px;
+  color: var(--mb-faint);
+}
+.fx-group-note {
+  margin: 0 0 18px;
+  font-size: 14px;
+  color: var(--mb-muted);
+}
+
+.fx-list { display: grid; gap: 12px; }
+
+.fx-card {
+  display: block;
+  padding: 16px 18px;
+  background: var(--mb-surface);
+  border: var(--mb-border-w) solid var(--mb-ink);
+  border-radius: var(--mb-radius);
+  text-decoration: none;
+  color: inherit;
+}
+.fx-card:hover { box-shadow: 3px 3px 0 var(--mb-ink); }
+.fx-card:focus-visible { outline: 2px solid var(--mb-link); outline-offset: 2px; }
+.fx-card[hidden] { display: none; }
+
+.fx-card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.fx-card-date {
+  font-family: var(--mb-font-mono);
+  font-size: 12.5px;
+  color: var(--mb-faint);
+}
+.fx-card-title {
+  margin: 0 0 6px;
+  font-size: 16.5px;
+  font-weight: 700;
+  color: var(--mb-ink);
+  line-height: 1.6;
+}
+.fx-card-summary {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--mb-ink-body);
+}
+.fx-card-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.fx-empty {
+  padding: 40px 0;
+  text-align: center;
+  color: var(--mb-faint);
+  font-size: 14px;
+}
+.fx-empty[hidden] { display: none; }
+
+.fx-detection-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 14px 0 18px;
+  padding: 12px 14px;
+  border: var(--mb-border-w) solid var(--mb-rule);
+  border-radius: var(--mb-radius);
+  background: var(--mb-surface);
+  font-family: var(--mb-font-mono);
+  font-size: 12.5px;
+}
+.fx-detection-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.fx-detection-swatch {
+  width: 13px;
+  height: 13px;
+  border-radius: 2px;
+  background: var(--fx-color);
+}
+
+@media (max-width: 720px) {
+  .fx-filters { gap: 6px; }
+  .fx-filters .fx-filter-label:not(:first-child) { margin-left: 0; }
+}
+
+@media print {
+  .fx-filters { display: none; }
+  .fx-card:hover { box-shadow: none; }
+}
+/* Experiment 033: model index and nested full-length video panels. */
+.fx033 .fx033-table-wrap { overflow-x: auto; }
+.fx033 .fx033-overview td { vertical-align: top; }
+.fx033 .fx033-overview td:first-child { min-width: 175px; }
+.fx033 .fx033-venue-links { min-width: 215px; }
+.fx033 .fx033-venue-links a { display: inline-block; margin: 0 10px 6px 0; }
+.fx033 .fx033-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 36px 0 18px; }
+.fx033 .fx033-toolbar > span { margin-right: auto; font-weight: 700; }
+.fx033 button { font: inherit; padding: 7px 13px; border: 1px solid #111110; border-radius: 6px; background: white; cursor: pointer; }
+.fx033 button:hover { background: #f0efec; }
+.fx033 details { scroll-margin-top: 20px; }
+.fx033 .fx033-method { border: 1px solid #111110; border-radius: 10px; background: white; margin: 0 0 16px; overflow: clip; }
+.fx033 .fx033-method > summary { padding: 20px 22px; display: flex; justify-content: space-between; align-items: center; gap: 16px; cursor: pointer; list-style: none; }
+.fx033 .fx033-method > summary::-webkit-details-marker { display: none; }
+.fx033 .fx033-method > summary::after { content: "+"; font-size: 24px; line-height: 1; }
+.fx033 .fx033-method[open] > summary::after { content: "−"; }
+.fx033 .fx033-method h2 { display: inline; border: 0; margin: 0; padding: 0; font-size: 20px; }
+.fx033 .fx033-method h2::before { display: none; }
+.fx033 .fx033-number { font-family: "Ubuntu Mono", monospace; margin-right: 12px; }
+.fx033 .fx033-kind { display: block; margin: 5px 0 0 32px; color: #555; font-size: 14px; }
+.fx033 .fx033-count { white-space: nowrap; font-size: 14px; color: #555; margin-left: auto; }
+.fx033 .fx033-method-body { border-top: 1px solid #111110; padding: 10px 22px 22px; }
+.fx033 .fx033-clip { margin-top: 14px; border: 1px solid #bdbcb7; border-radius: 7px; }
+.fx033 .fx033-clip > summary { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; list-style: none; font-weight: 700; }
+.fx033 .fx033-clip > summary::-webkit-details-marker { display: none; }
+.fx033 .fx033-clip > summary::before { content: "+"; font-weight: 400; }
+.fx033 .fx033-clip[open] > summary::before { content: "−"; }
+.fx033 .fx033-clip small { display: block; font-weight: 400; font-size: 13px; color: #555; margin-top: 4px; }
+.fx033 .fx033-clip-body { padding: 0 16px 18px; }
+.fx033 .fx033-clip .mb-figure { margin: 12px 0 18px; }
+.fx033 .fx033-clip img { display: block; width: 100%; height: auto; }
+.fx033 .fx033-evidence { border-top: 1px solid #d6d5d0; margin: 18px 0 0; padding: 12px 0; }
+.fx033 .fx033-evidence > summary { cursor: pointer; font-weight: 500; }
+.fx033 .fx033-video-link { font-size: 14px; }
+.fx033 .fx033-back { display: block; width: fit-content; margin: 36px 0 0 auto; }
+.fx033 summary:focus-visible, .fx033 button:focus-visible { outline: 3px solid #2990da; outline-offset: 3px; }
+@media (max-width: 600px) {
+  .fx033 .fx033-method > summary { padding: 16px 12px; gap: 8px; }
+  .fx033 .fx033-method h2 { font-size: 17px; }
+  .fx033 .fx033-method-body { padding: 8px 10px 16px; }
+  .fx033 .fx033-clip-body { padding: 0 8px 12px; }
+  .fx033 .fx033-clip > summary { padding: 12px 9px; }
+  .fx033 .fx033-toolbar { gap: 8px; }
+}

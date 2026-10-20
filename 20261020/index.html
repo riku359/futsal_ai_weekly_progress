@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weekly Progress 2026-10-20：人物とボールの検出比較</title>
+<meta name="fx-date" content="2026-10-20">
+<meta name="fx-title" content="Weekly Progress 2026-10-20">
+<meta name="fx-summary" content="人物とボールの検出を5条件で比較。実験条件、学習データ、4会場の5分動画と、イベント検知に向けた次の計画をまとめる。">
+<meta name="fx-topic" content="検出と追跡"><meta name="fx-stage" content="段階1">
+<meta name="fx-experiments" content="033">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@400;500;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;family=Ubuntu+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/document.css"><link rel="stylesheet" href="./assets/report.css">
+<script src="./assets/math-copy.js"></script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+<script defer src="./assets/experiment-033.js"></script>
+</head>
+<body class="weekly-progress"><div class="mb-page">
+<header class="mb-header" id="top"><div>
+<p class="mb-meta-line">2026-10-20</p>
+<h1>Weekly Progress</h1>
+</div></header>
+<div class="mb-wrap"><main class="mb-main">
+<nav class="mb-toc" aria-label="目次"><ol>
+<li><a href="#previous">前回までの議論</a></li>
+<li><a href="#work">今回やったこと</a></li>
+<li><a href="#overview">結果</a></li>
+<li><a href="#qualitative">結果（定性）</a></li>
+<li><a href="#next">今後やること</a></li>
+</ol></nav>
+<h2 id="previous">前回までの議論</h2>
+<ul>
+<li>Astraなどのfoundation modelは推論時間とお金がかかる</li>
+<li>MOTやposeを活用してイベントの検知をする方針になった</li>
+</ul>
+<h2 id="work">今回やったこと</h2>
+<ul><li>まずはYOLO / DETRなどフレームごとに適用できるモデルを評価した</li></ul>
+<details class="mb-toggle mb-toggle--info" id="conditions">
+<summary>実験条件と学習データ</summary>
+<div class="mb-toggle-body">
+<h3>共通条件</h3>
+<table><tr><th>項目</th><th>内容</th></tr>
+<tr><td class="mb-rowlabel">入力</td><td>白子、東川口、多摩、坂戸。元動画5:00〜10:00、1920×1080</td></tr>
+<tr><td class="mb-rowlabel">処理</td><td>全フレーム推論。今回の比較用の追加学習は行わない</td></tr>
+<tr><td class="mb-rowlabel">動画表示</td><td>5分全編は横幅960px。追加4条件の全編とイベント抜粋は20fps、音声なし</td></tr>
+<tr><td class="mb-rowlabel">時刻</td><td>プレーヤーの0:00は元動画の5:00。抜粋の説明は元動画時刻</td></tr>
+<tr><td class="mb-rowlabel">実行日</td><td>Deep-EIoUは2026年10月14日、追加条件は10月15日の記録</td></tr>
+</table>
+<h3>Deep-EIoU</h3>
+<table><tr><th>項目</th><th>内容</th></tr>
+<tr><td class="mb-rowlabel">出力</td><td>人物bboxとID。球は対象外</td></tr>
+<tr><td class="mb-rowlabel">学習データ</td><td><a href="https://github.com/MCG-NJU/SportsMOT#motivation">SportsMOT。サッカー、バスケットボール、バレーボールの選手</a></td></tr>
+<tr><td class="mb-rowlabel">推論条件</td><td>YOLOX-xとOSNet-x1.0。検出器入力800×1440、float32</td></tr></table>
+<h3>YOLO11x + BoT-SORT</h3>
+<table><tr><th>項目</th><th>内容</th></tr>
+<tr><td class="mb-rowlabel">出力</td><td>人物bboxとID、球のbbox。球IDは表示しない</td></tr>
+<tr><td class="mb-rowlabel">学習データ</td><td><a href="https://docs.ultralytics.com/models/yolo11/">COCOの80クラスからpersonとsports ballを使用</a></td></tr>
+<tr><td class="mb-rowlabel">推論条件</td><td>入力1920、信頼度0.25。BoT-SORTで追跡</td></tr></table>
+<h3>RF-DETR（全画面）</h3>
+<table><tr><th>項目</th><th>内容</th></tr>
+<tr><td class="mb-rowlabel">出力</td><td>人物と球のbbox。追跡IDなし</td></tr>
+<tr><td class="mb-rowlabel">学習データ</td><td><a href="https://github.com/roboflow/rf-detr">COCO配布重みからpersonとsports ballを使用</a></td></tr>
+<tr><td class="mb-rowlabel">推論条件</td><td>1×1入力、表示閾値0.5、float32、追加学習なし</td></tr></table>
+<h3>RF-DETR（3×2タイル）</h3>
+<table><tr><th>項目</th><th>内容</th></tr>
+<tr><td class="mb-rowlabel">出力</td><td>人物と球のbbox。追跡IDなし</td></tr>
+<tr><td class="mb-rowlabel">学習データ</td><td><a href="https://github.com/roboflow/rf-detr">全画面版と同じCOCO配布重み</a></td></tr>
+<tr><td class="mb-rowlabel">推論条件</td><td>3×2タイル、重なり0.2、表示閾値0.5、float32</td></tr></table>
+<h3>WASB</h3>
+<table><tr><th>項目</th><th>内容</th></tr>
+<tr><td class="mb-rowlabel">出力</td><td>球中心の円と軌跡。人物bboxと球bboxはなし</td></tr>
+<tr><td class="mb-rowlabel">学習データ</td><td><a href="https://github.com/nttcom/WASB-SBDT/blob/main/GET_STARTED.md">公開サッカーデータの配布重み。球中心と可視性を学習</a></td></tr>
+<tr><td class="mb-rowlabel">推論条件</td><td>3フレーム入力、3×3タイル、重なり0.2、候補閾値0.1、最大変位100px</td></tr></table>
+</div></details>
+<h2 id="overview">結果</h2>
+<h3>Deep-EIoU</h3>
+<ul>
+<li>誤検出は少ない、選手だけにbboxがちゃんと付く</li>
+<li>アネルや東川口の奥の方の小さな選手の見逃しが目立つ</li>
+</ul>
+<h3>YOLO11x + BoT-SORT</h3>
+<ul>
+<li>画面に映る人間（プレーヤー以外含む）を漏れなく検出する</li>
+<li>ボールはあまり検出されない</li>
+</ul>
+<h3>RF-DETR（全画面）</h3>
+<ul>
+<li>検出bbox数はYOLOとDeep-EIoUの中間くらい</li>
+<li>ボールは城西の手前側とか見やすい状態に稀に検出される</li>
+</ul>
+<h3>RF-DETR（3×2タイル）</h3>
+<ul>
+<li>RF-DETR（全画面）よりも遠方の検出やボールの検出ができる</li>
+<li>ベンチの過検出もその分増える</li>
+</ul>
+<h3>WASB</h3>
+<ul><li>東川口とか見づらい場合のボールは検出されない</li></ul>
+<h2 id="qualitative">結果（定性）</h2>
+<details class="mb-toggle fx033-method" id="model-deiou">
+<summary>Deep-EIoU</summary>
+<div class="mb-toggle-body">
+<details class="mb-toggle fx033-clip" id="deiou-clip-1">
+<summary>白子（アネル）<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-deiou-20240608_E_ryukei_LLeCgGIe_hQ_0300_0600.mp4"
+aria-label="Deep-EIoU 白子 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-deiou-20240608_E_ryukei_LLeCgGIe_hQ_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>枠の色と数字：人物ID</figcaption>
+</figure>
+</div></details>
+<details class="mb-toggle fx033-clip" id="deiou-clip-2">
+<summary>東川口<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-deiou-20230630_E_meigaku_C3q6I0na7NM_0300_0600.mp4"
+aria-label="Deep-EIoU 東川口 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-deiou-20230630_E_meigaku_C3q6I0na7NM_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>枠の色と数字：人物ID</figcaption>
+</figure>
+</div></details>
+<details class="mb-toggle fx033-clip" id="deiou-clip-3">
+<summary>多摩<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-deiou-20230729_E_juntendo_lbO3oX_zsSE_0300_0600.mp4"
+aria-label="Deep-EIoU 多摩 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-deiou-20230729_E_juntendo_lbO3oX_zsSE_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>枠の色と数字：人物ID</figcaption>
+</figure>
+</div></details>
+<details class="mb-toggle fx033-clip" id="deiou-clip-4">
+<summary>坂戸（城西）<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-deiou-20230702_E_gakushuin_epK1tO2dBdw_0300_0600.mp4"
+aria-label="Deep-EIoU 坂戸 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-deiou-20230702_E_gakushuin_epK1tO2dBdw_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>枠の色と数字：人物ID</figcaption>
+</figure>
+</div></details>
+</div></details>
+<details class="mb-toggle fx033-method" id="model-yolo">
+<summary>YOLO11x + BoT-SORT</summary>
+<div class="mb-toggle-body">
+<details class="mb-toggle fx033-clip" id="yolo-clip-1">
+<summary>白子（アネル）<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-yolo-20240608_E_ryukei_LLeCgGIe_hQ_0300_0600.mp4"
+aria-label="YOLO11x ＋ BoT-SORT 白子 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-yolo-20240608_E_ryukei_LLeCgGIe_hQ_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>Personの数字：人物ID。枠の色：胴体色のクラスタ。Ball：球候補</figcaption>
+</figure>
+</div></details>
+<details class="mb-toggle fx033-clip" id="yolo-clip-2">
+<summary>東川口<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-yolo-20230630_E_meigaku_C3q6I0na7NM_0300_0600.mp4"
+aria-label="YOLO11x ＋ BoT-SORT 東川口 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-yolo-20230630_E_meigaku_C3q6I0na7NM_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>Personの数字：人物ID。枠の色：胴体色のクラスタ。Ball：球候補</figcaption>
+</figure>
+</div></details>
+<details class="mb-toggle fx033-clip" id="yolo-clip-3">
+<summary>多摩<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-yolo-20230729_E_juntendo_lbO3oX_zsSE_0300_0600.mp4"
+aria-label="YOLO11x ＋ BoT-SORT 多摩 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-yolo-20230729_E_juntendo_lbO3oX_zsSE_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>Personの数字：人物ID。枠の色：胴体色のクラスタ。Ball：球候補</figcaption>
+</figure>
+</div></details>
+<details class="mb-toggle fx033-clip" id="yolo-clip-4">
+<summary>坂戸（城西）<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-yolo-20230702_E_gakushuin_epK1tO2dBdw_0300_0600.mp4"
+aria-label="YOLO11x ＋ BoT-SORT 坂戸 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-yolo-20230702_E_gakushuin_epK1tO2dBdw_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>Personの数字：人物ID。枠の色：胴体色のクラスタ。Ball：球候補</figcaption>
+</figure>
+</div></details>
+</div></details>
+<details class="mb-toggle fx033-method" id="model-rfdetr-full">
+<summary>RF-DETR（全画面）</summary>
+<div class="mb-toggle-body">
+<details class="mb-toggle fx033-clip" id="rfdetr-full-clip-1">
+<summary>白子（アネル）<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-rfdetr-full-20240608_E_ryukei_LLeCgGIe_hQ_0300_0600.mp4"
+aria-label="RF-DETR Large（全画面） 白子 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-rfdetr-full-20240608_E_ryukei_LLeCgGIe_hQ_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>Person：人物。Ball：球候補。追跡IDなし</figcaption>
+</figure>
+</div></details>
+<details class="mb-toggle fx033-clip" id="rfdetr-full-clip-2">
+<summary>東川口<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-rfdetr-full-20230630_E_meigaku_C3q6I0na7NM_0300_0600.mp4"
+aria-label="RF-DETR Large（全画面） 東川口 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-rfdetr-full-20230630_E_meigaku_C3q6I0na7NM_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>Person：人物。Ball：球候補。追跡IDなし</figcaption>
+</figure>
+</div></details>
+<details class="mb-toggle fx033-clip" id="rfdetr-full-clip-3">
+<summary>多摩<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-rfdetr-full-20230729_E_juntendo_lbO3oX_zsSE_0300_0600.mp4"
+aria-label="RF-DETR Large（全画面） 多摩 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-rfdetr-full-20230729_E_juntendo_lbO3oX_zsSE_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>Person：人物。Ball：球候補。追跡IDなし</figcaption>
+</figure>
+</div></details>
+<details class="mb-toggle fx033-clip" id="rfdetr-full-clip-4">
+<summary>坂戸（城西）<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-rfdetr-full-20230702_E_gakushuin_epK1tO2dBdw_0300_0600.mp4"
+aria-label="RF-DETR Large（全画面） 坂戸 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-rfdetr-full-20230702_E_gakushuin_epK1tO2dBdw_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>Person：人物。Ball：球候補。追跡IDなし</figcaption>
+</figure>
+</div></details>
+</div></details>
+<details class="mb-toggle fx033-method" id="model-rfdetr-tiled">
+<summary>RF-DETR（3×2タイル）</summary>
+<div class="mb-toggle-body">
+<details class="mb-toggle fx033-clip" id="rfdetr-tiled-clip-1">
+<summary>白子（アネル）<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-rfdetr-tiled-20240608_E_ryukei_LLeCgGIe_hQ_0300_0600.mp4"
+aria-label="RF-DETR Large（3×2タイル） 白子 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-rfdetr-tiled-20240608_E_ryukei_LLeCgGIe_hQ_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>Person：人物。Ball：球候補。追跡IDなし</figcaption>
+</figure>
+</div></details>
+<details class="mb-toggle fx033-clip" id="rfdetr-tiled-clip-2">
+<summary>東川口<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-rfdetr-tiled-20230630_E_meigaku_C3q6I0na7NM_0300_0600.mp4"
+aria-label="RF-DETR Large（3×2タイル） 東川口 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-rfdetr-tiled-20230630_E_meigaku_C3q6I0na7NM_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>Person：人物。Ball：球候補。追跡IDなし</figcaption>
+</figure>
+</div></details>
+<details class="mb-toggle fx033-clip" id="rfdetr-tiled-clip-3">
+<summary>多摩<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-rfdetr-tiled-20230729_E_juntendo_lbO3oX_zsSE_0300_0600.mp4"
+aria-label="RF-DETR Large（3×2タイル） 多摩 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-rfdetr-tiled-20230729_E_juntendo_lbO3oX_zsSE_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>Person：人物。Ball：球候補。追跡IDなし</figcaption>
+</figure>
+</div></details>
+<details class="mb-toggle fx033-clip" id="rfdetr-tiled-clip-4">
+<summary>坂戸（城西）<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-rfdetr-tiled-20230702_E_gakushuin_epK1tO2dBdw_0300_0600.mp4"
+aria-label="RF-DETR Large（3×2タイル） 坂戸 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-rfdetr-tiled-20230702_E_gakushuin_epK1tO2dBdw_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>Person：人物。Ball：球候補。追跡IDなし</figcaption>
+</figure>
+</div></details>
+</div></details>
+<details class="mb-toggle fx033-method" id="model-wasb">
+<summary>WASB</summary>
+<div class="mb-toggle-body">
+<details class="mb-toggle fx033-clip" id="wasb-clip-1">
+<summary>白子（アネル）<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-wasb-20240608_E_ryukei_LLeCgGIe_hQ_0300_0600.mp4"
+aria-label="WASB（soccer） 白子 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-wasb-20240608_E_ryukei_LLeCgGIe_hQ_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>黄色の円：採用位置。黄色の線：軌跡。赤い円：不採用の球候補</figcaption>
+</figure>
+</div></details>
+<details class="mb-toggle fx033-clip" id="wasb-clip-2">
+<summary>東川口<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-wasb-20230630_E_meigaku_C3q6I0na7NM_0300_0600.mp4"
+aria-label="WASB（soccer） 東川口 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-wasb-20230630_E_meigaku_C3q6I0na7NM_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>黄色の円：採用位置。黄色の線：軌跡。赤い円：不採用の球候補</figcaption>
+</figure>
+</div></details>
+<details class="mb-toggle fx033-clip" id="wasb-clip-3">
+<summary>多摩<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-wasb-20230729_E_juntendo_lbO3oX_zsSE_0300_0600.mp4"
+aria-label="WASB（soccer） 多摩 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-wasb-20230729_E_juntendo_lbO3oX_zsSE_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>黄色の円：採用位置。黄色の線：軌跡。赤い円：不採用の球候補</figcaption>
+</figure>
+</div></details>
+<details class="mb-toggle fx033-clip" id="wasb-clip-4">
+<summary>坂戸（城西）<span class="mb-toggle-meta">5分</span></summary>
+<div class="mb-toggle-body">
+<figure class="mb-figure">
+<div class="mb-figure-frame"><video class="fx-video" src="./media/20261014-deiou-gt-qualitative/full-wasb-20230702_E_gakushuin_epK1tO2dBdw_0300_0600.mp4"
+aria-label="WASB（soccer） 坂戸 5分全編" poster="./media/20261014-deiou-gt-qualitative/full-wasb-20230702_E_gakushuin_epK1tO2dBdw_0300_0600.jpg" controls loop muted playsinline preload="metadata"></video></div>
+<figcaption>黄色の円：採用位置。黄色の線：軌跡。赤い円：不採用の球候補</figcaption>
+</figure>
+</div></details>
+</div></details>
+<h2 id="next">今後やること</h2>
+<h3>アノテーション関連</h3>
+<ul>
+<li>イベントにチームのラベルを付与</li>
+<li>残りの動画に対してGT作成</li>
+<li>Astra出力の評価指標を計算</li>
+</ul>
+<h3>MOT関連</h3>
+<ul>
+<li>ヒューリスティックにセットプレー等を検知できるか試す
+<ul>
+<li>軌跡の連続性、軌道、運動学とかでbboxをrefine</li>
+<li>コート領域にbboxを限定</li>
+<li>位置、速度の関係をGTのプレー候補から算出して分析</li>
+</ul></li>
+<li>動画に対するMOTモデルについて
+<ul>
+<li>サーベイ</li>
+<li>futsal videoと相性が良さそうなものを動かしてみる</li>
+<li>ヒューリスティックな検知をやってみる</li>
+</ul></li>
+</ul>
+<h3>Video action spotting関連</h3>
+<ul>
+<li>SOTAモデルのサーベイ</li>
+<li>futsal videoと相性の良さそうなものを動かす</li>
+<li>bbox情報などの活用を検討</li>
+</ul>
+</main></div>
+</div></body></html>
